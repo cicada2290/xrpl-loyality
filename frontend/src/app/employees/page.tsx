@@ -1,13 +1,15 @@
 import PageTitle from '@/components/typography/PageTitle'
 import EmployeeIDCardDialog from '@/components/dialog/EmployeeIDCardDialog'
+import EmployeeTable from '@/components/table/EmployeeTable'
 
-const EmployeePage = () => {
+const EmployeesPage = () => {
   return (
     <>
-      <PageTitle>EMPLOYEE</PageTitle>
+      <PageTitle>EMPLOYEES</PageTitle>
       <EmployeeIDCardDialog />
+      <EmployeeTable />
     </>
   )
 }
 
-export default EmployeePage
+export default EmployeesPage

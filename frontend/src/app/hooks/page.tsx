@@ -1,13 +1,13 @@
 import PageTitle from '@/components/typography/PageTitle'
 import SetHookDialog from '@/components/dialog/SetHookDialog'
 
-const HookPage = () => {
+const HooksPage = () => {
   return (
     <>
-      <PageTitle>HOOK</PageTitle>
+      <PageTitle>HOOKS</PageTitle>
       <SetHookDialog />
     </>
   )
 }
 
-export default HookPage
+export default HooksPage
