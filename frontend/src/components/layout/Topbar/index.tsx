@@ -1,7 +1,6 @@
 import { APP_NAME } from '@/constants'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import WalletConnectButton from '@/components/button/WalletConnectButton'
