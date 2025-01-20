@@ -25,5 +25,9 @@ int64_t hook(uint32_t reserved ) {
         TRACESTR("Payment Tx");
     }
 
+    accept (0,0,0);
+
+    _g(1,1);
+
     return 0;
 }

@@ -1230,7 +1230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@transia/xrpl@npm:^2.7.3-alpha.24":
+"@transia/xrpl@npm:^2.7.3-alpha.24, @transia/xrpl@npm:^2.7.3-alpha.28":
   version: 2.7.3-alpha.28
   resolution: "@transia/xrpl@npm:2.7.3-alpha.28"
   dependencies:
@@ -3032,6 +3032,7 @@ __metadata:
     "@gemwallet/api": "npm:^3.8.0"
     "@mui/icons-material": "npm:^6.4.0"
     "@mui/material": "npm:^6.4.0"
+    "@transia/xrpl": "npm:^2.7.3-alpha.28"
     "@types/node": "npm:^20"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
