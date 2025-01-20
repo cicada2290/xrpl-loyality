@@ -1,5 +1,11 @@
 import type { Employee } from '@/types'
-import { XAHAU_WSS_ENDPOINT, ALICE_WALLET_SECRET, BOB_WALLET_SECRET, CAROL_WALLET_SECRET, COMPANY_WALLET_SECRET } from '@/constants'
+import {
+  XAHAU_WSS_ENDPOINT,
+  ALICE_WALLET_SECRET,
+  BOB_WALLET_SECRET,
+  CAROL_WALLET_SECRET,
+  COMPANY_WALLET_SECRET,
+} from '@/constants'
 import { useState } from 'react'
 import { Client, Wallet } from '@transia/xrpl'
 import { generate256BitHash } from '@/utils'
@@ -23,7 +29,7 @@ const defaultEmployee: Employee[] = [
     id: generate256BitHash('3'),
     empolyID: carolWallet.address,
     name: 'Carol',
-  }
+  },
 ]
 
 export const useAccountObject = () => {
@@ -41,7 +47,7 @@ export const useAccountObject = () => {
       const response = await client.request({
         command: 'account_objects',
         account: wallet.address,
-        ledger_index: "validated"
+        ledger_index: 'validated',
       })
 
       const accountObjects = response.result.account_objects

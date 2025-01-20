@@ -1,4 +1,4 @@
-import * as crypto from 'crypto';
+import * as crypto from 'crypto'
 
 export const generate256BitHash = (input: string): string => {
   const hash = crypto.createHash('sha256')

@@ -44,7 +44,9 @@ const EmployeeTable = () => {
       <TableBody>
         {data.map((row) => (
           <TableRow key={row.id}>
-            <TableCell>{row.id.slice(0, 8)}...{row.id.slice(-8)}</TableCell>
+            <TableCell>
+              {row.id.slice(0, 8)}...{row.id.slice(-8)}
+            </TableCell>
             <TableCell>{row.empolyID}</TableCell>
             <TableCell>{row.name}</TableCell>
             <TableCell>{row.owner || '-'}</TableCell>

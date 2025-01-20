@@ -1,18 +1,12 @@
 import type { URITokenBuy } from '@transia/xrpl'
 import { useState } from 'react'
 import { XAHAU_WSS_ENDPOINT } from '@/constants'
-import { Client, Wallet, xrpToDrops, } from '@transia/xrpl'
+import { Client, Wallet, xrpToDrops } from '@transia/xrpl'
 
 export const useURITokenBuy = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
-  const submit = async ({
-    execWallet,
-    URITokenID
-  }: {
-    execWallet: Wallet
-    URITokenID: string
-  }) => {
+  const submit = async ({ execWallet, URITokenID }: { execWallet: Wallet; URITokenID: string }) => {
     const client = new Client(XAHAU_WSS_ENDPOINT)
 
     try {
@@ -34,13 +28,12 @@ export const useURITokenBuy = () => {
 
       const response = await client.submitAndWait(tx, opts)
       console.info('useURITokenBuy: submit: ', response)
-
     } catch (error) {
       console.error('useURITokenBuy: submit: ', error)
     } finally {
       setLoading(false)
       client.disconnect()
-    } 
+    }
   }
 
   return {
