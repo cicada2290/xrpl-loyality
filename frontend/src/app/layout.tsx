@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
-import { APP_NAME } from '@/app/constants'
+import { APP_NAME } from '@/constants'
 import Container from '@mui/material/Container'
 import Topbar from '@/components/layout/Topbar'
 
