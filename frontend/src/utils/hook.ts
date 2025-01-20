@@ -30,12 +30,12 @@ const tts = {
 */
 
 export function xor(n: bigint) {
-  let v = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffbfffffn;
-  v ^= (1n << n);
+  let v = 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffbfffffn
+  v ^= 1n << n
 
-  let s = v.toString(16).padStart(64, '0');
-  s = `0x${s}`;
+  let s = v.toString(16).padStart(64, '0')
+  s = `0x${s}`
 
-  console.log("s: ", s);
-  console.log("s: ", s.toLocaleUpperCase())
+  console.log('s: ', s)
+  console.log('s: ', s.toLocaleUpperCase())
 }
