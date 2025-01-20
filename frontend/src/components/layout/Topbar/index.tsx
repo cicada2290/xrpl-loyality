@@ -1,10 +1,11 @@
-import { APP_NAME } from '@/app/constants'
+import { APP_NAME } from '@/constants'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import WalletConnectButton from '@/components/button/WalletConnectButton'
+import TopbarLinkButton from '@/components/layout/TopbarLinkButton'
 
 const Topbar = () => {
   return (
@@ -19,15 +20,9 @@ const Topbar = () => {
           {APP_NAME}
         </Typography>
         <Box sx={{ flexGrow: 1, display: 'flex', gap: 2 }}>
-          <Button color="inherit" href="/">
-            HOME
-          </Button>
-          <Button color="inherit" href="/employee">
-            EMPLOYEE
-          </Button>
-          <Button color="inherit" href="/hook">
-            HOOK
-          </Button>
+          <TopbarLinkButton href="/" label="HOME" />
+          <TopbarLinkButton href="/employee" label="EMPLOYEE" />
+          <TopbarLinkButton href="/hook" label="HOOK" />
         </Box>
         <Box>
           <WalletConnectButton />
