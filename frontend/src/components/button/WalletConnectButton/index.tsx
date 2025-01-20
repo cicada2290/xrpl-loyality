@@ -1,6 +1,6 @@
 'use client'
 
-import { isInstalled, getAddress } from "@gemwallet/api"
+import { isInstalled, getAddress } from '@gemwallet/api'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import useAccountStore from '@/store'

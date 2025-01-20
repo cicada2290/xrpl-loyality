@@ -20,8 +20,8 @@ const Topbar = () => {
         </Typography>
         <Box sx={{ flexGrow: 1, display: 'flex', gap: 2 }}>
           <TopbarLinkButton href="/" label="HOME" />
-          <TopbarLinkButton href="/employee" label="EMPLOYEE" />
-          <TopbarLinkButton href="/hook" label="HOOK" />
+          <TopbarLinkButton href="/employees" label="EMPLOYEES" />
+          <TopbarLinkButton href="/hooks" label="HOOKS" />
         </Box>
         <Box>
           <WalletConnectButton />
