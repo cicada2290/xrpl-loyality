@@ -8,7 +8,8 @@ export class XrplClient {
     this.client = new Client(url)
   }
 
-  submitURITokenMint(tx: URITokenMint, executeWallet: Wallet) {
+  async submitURITokenMint(tx: URITokenMint, executeWallet: Wallet) {
+    tx.NetworkID = await this.client.getNetworkID()
     return this.#submit(tx, executeWallet)
   }
 
@@ -25,6 +26,7 @@ export class XrplClient {
       return response
     } catch (error) {
       console.error('XrplClient: submit: ', error)
+      throw error
     } finally {
       await this.client.disconnect()
     }
