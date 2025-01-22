@@ -1,6 +1,6 @@
-import type { URITokenMint, Wallet } from '@transia/xrpl'
-import { Client } from '@transia/xrpl'
-
+import type { AccountObjectsRequest, URITokenMint } from '@transia/xrpl'
+import { Client, Wallet } from '@transia/xrpl'
+import { ALICE_WALLET_SECRET, BOB_WALLET_SECRET, CAROL_WALLET_SECRET, COMPANY_WALLET_SECRET } from '@/constants'
 export class XrplClient {
   private client: Client
 
@@ -8,9 +8,51 @@ export class XrplClient {
     this.client = new Client(url)
   }
 
+  wallet(name: 'alice' | 'bob' | 'carol' | 'company') {
+    switch (name) {
+      case 'alice':
+        return Wallet.fromSeed(ALICE_WALLET_SECRET)
+      case 'bob':
+        return Wallet.fromSeed(BOB_WALLET_SECRET)
+      case 'carol':
+        return Wallet.fromSeed(CAROL_WALLET_SECRET)
+      case 'company':
+        return Wallet.fromSeed(COMPANY_WALLET_SECRET)
+    }
+  }
+
+  async requestAccountObjects(request: AccountObjectsRequest) {
+    return this.#request(request)
+  }
+
   async submitURITokenMint(tx: URITokenMint, executeWallet: Wallet) {
     tx.NetworkID = await this.client.getNetworkID()
     return this.#submit(tx, executeWallet)
+  }
+
+  async connect() {
+    await this.client.connect()
+  }
+
+  async disconnect() {
+    await this.client.disconnect()
+  }
+
+  async singleRequest(request: AccountObjectsRequest) {
+    return await this.client.request(request)
+  }
+
+  async #request(request: AccountObjectsRequest) {
+    await this.client.connect()
+
+    try {
+      return await this.client.request(request)
+    } catch (error) {
+      console.error('XrplClient: request: ', error)
+      throw error
+    } finally {
+      await this.client.disconnect()
+    }
   }
 
   async #submit(tx: URITokenMint, executeWallet: Wallet) {
