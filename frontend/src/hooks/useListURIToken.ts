@@ -61,7 +61,7 @@ export const useListURIToken = () => {
             isReceived: employeeData.empolyID === accountObjest?.Owner,
             index: accountObjest?.index,
           }
-        })
+        }),
       )
 
       setData(result)
