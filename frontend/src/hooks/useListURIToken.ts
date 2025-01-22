@@ -48,6 +48,8 @@ export const useListURIToken = () => {
             ledger_index: 'validated',
           })
 
+          console.log('Response: ', employeeData.name, response.result.account_objects)
+
           const accountObjest = response.result.account_objects
             .filter((data) => data.LedgerEntryType === 'URIToken')
             .filter((data) => employeeData.id === data.Digest)

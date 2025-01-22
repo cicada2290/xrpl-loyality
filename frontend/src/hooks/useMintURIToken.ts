@@ -1,51 +1,44 @@
 import type { URITokenMint } from '@transia/xrpl'
-import { BACKEND_API_URL, XAHAU_WSS_ENDPOINT, COMPANY_WALLET_SECRET } from '@/constants'
 import { useState } from 'react'
-import { Client, Wallet, URITokenMintFlags, convertStringToHex } from '@transia/xrpl'
+import { URITokenMintFlags, convertStringToHex } from '@transia/xrpl'
+import { BACKEND_API_URL, XAHAU_WSS_ENDPOINT } from '@/constants'
 import { generate256BitHash } from '@/utils'
+import { XrplClient } from '@/libs'
 
-const EMPLOYEE_ID_CARD_URI = `${BACKEND_API_URL}/api/empoly/`
+const EMPLOYEE_ID_CARD_URI = `${BACKEND_API_URL}/api/employee`
 
 export type SubmitRequest = {
   tokenID: string
   destination: string
 }
 
+const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
+
 export const useURITokenMint = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
   const submit = async ({ tokenID, destination }: SubmitRequest): Promise<void> => {
-    const client = new Client(XAHAU_WSS_ENDPOINT)
-    const wallet = Wallet.fromSeed(COMPANY_WALLET_SECRET)
+    setLoading(true)
 
     try {
-      setLoading(true)
-      await client.connect()
-
       const tx: URITokenMint = {
         TransactionType: 'URITokenMint',
         Amount: '0',
-        Account: wallet.address,
+        Account: xrplClient.wallet('company').address,
         Destination: destination,
         Digest: generate256BitHash(tokenID),
         URI: convertStringToHex(`${EMPLOYEE_ID_CARD_URI}/${tokenID}`),
         Flags: URITokenMintFlags.tfBurnable,
-        NetworkID: await client.getNetworkID(),
       }
 
       console.info('useURITokenMint: submit: ', tx)
 
-      const opts = {
-        autofill: true,
-        wallet,
-      }
-
-      const response = await client.submitAndWait(tx, opts)
+      const response = await xrplClient.submitURITokenMint(tx, xrplClient.wallet('company'))
       console.info('useURITokenMint: submit: ', response)
     } catch (error) {
       console.error('useURITokenMint: submit: ', error)
+      throw error
     } finally {
-      await client.disconnect()
       setLoading(false)
     }
   }

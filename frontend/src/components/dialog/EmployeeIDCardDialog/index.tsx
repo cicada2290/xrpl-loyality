@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
 import useAccountStore from '@/store'
-import { useURITokenMint } from '@/hooks/useURITokenMint'
+import { useURITokenMint } from '@/hooks/useMintURIToken'
 
 const EmployeeIDCardDialog = () => {
   const [open, setOpen] = useState(false)

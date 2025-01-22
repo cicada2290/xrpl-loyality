@@ -10,7 +10,7 @@ import URITokenClaimButton from '@/components/button/URITokenClaimButton'
 import { useListURIToken } from '@/hooks/useListURIToken'
 
 const EmployeeTable = () => {
-  const { data } = useListURIToken()
+  const { data, fetch } = useListURIToken()
 
   return (
     <Table>
@@ -31,7 +31,7 @@ const EmployeeTable = () => {
             <TableCell>{row.empolyID}</TableCell>
             <TableCell>{row.name}</TableCell>
             <TableCell>
-              {!row.isMinted && <URITokenMintButton />}
+              {!row.isMinted && <URITokenMintButton fetch={fetch} tokenID={row.id} destination={row.empolyID} />}
               {row.isMinted && <URITokenClaimButton />}
             </TableCell>
           </TableRow>

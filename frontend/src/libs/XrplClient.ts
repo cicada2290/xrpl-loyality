@@ -26,7 +26,6 @@ export class XrplClient {
   }
 
   async submitURITokenMint(tx: URITokenMint, executeWallet: Wallet) {
-    tx.NetworkID = await this.client.getNetworkID()
     return this.#submit(tx, executeWallet)
   }
 
@@ -63,6 +62,8 @@ export class XrplClient {
         wallet: executeWallet,
         autofill: true,
       }
+
+      tx.NetworkID = await this.client.getNetworkID()
 
       const response = await this.client.submitAndWait(tx, opts)
       return response
