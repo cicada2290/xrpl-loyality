@@ -22,14 +22,18 @@ export const useListURIToken = () => {
             xrplClient.singleRequest({
               command: 'account_objects',
               account: xrplClient.wallet(employee.name).address,
-              ledger_index: 'validated',
+              // ledger_index: 'validated',
             }),
             xrplClient.singleRequest({
               command: 'account_objects',
               account: xrplClient.wallet('Company').address,
-              ledger_index: 'validated',
+              // ledger_index: 'validated',
             }),
           ])
+
+          console.info('employee: ', employee.id)
+          console.info('employeeResponse: ', employeeResponse)
+          console.info('companyResponse: ', companyResponse)
 
           const uriToken = [
             ...(employeeResponse?.result.account_objects ?? []),

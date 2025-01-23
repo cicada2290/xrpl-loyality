@@ -1,11 +1,12 @@
 'use client'
 
+import type { EmployeeName } from '@/types'
 import Button from '@mui/material/Button'
 import { useURITokenMint } from '@/hooks/useMintURIToken'
 
 interface URITokenMintButtonProps {
   tokenID: string
-  destination: string
+  destination: EmployeeName
   fetch: () => void
 }
 
