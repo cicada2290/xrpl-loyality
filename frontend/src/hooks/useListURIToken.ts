@@ -22,16 +22,15 @@ export const useListURIToken = () => {
             xrplClient.singleRequest({
               command: 'account_objects',
               account: xrplClient.wallet(employee.name).address,
-              // ledger_index: 'validated',
+              ledger_index: 'validated',
             }),
             xrplClient.singleRequest({
               command: 'account_objects',
               account: xrplClient.wallet('Company').address,
-              // ledger_index: 'validated',
+              ledger_index: 'validated',
             }),
           ])
 
-          console.info('employee: ', employee.id)
           console.info('employeeResponse: ', employeeResponse)
           console.info('companyResponse: ', companyResponse)
 
@@ -45,13 +44,15 @@ export const useListURIToken = () => {
 
           return {
             ...employee,
+            employeeID: xrplClient.wallet(employee.name).address,
             isMinted: !!uriToken,
-            isReceived: uriToken ? employee.id === uriToken.Owner : false,
+            isReceived: uriToken ? xrplClient.wallet(employee.name).address === uriToken.Owner : false,
             index: uriToken?.index,
           }
         }),
       )
 
+      console.info('useListURIToken: result: ', result)
       setData(result)
     } catch (error) {
       console.error('useListURIToken: request: ', error)

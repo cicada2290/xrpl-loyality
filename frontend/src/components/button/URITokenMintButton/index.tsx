@@ -15,7 +15,7 @@ const URITokenMintButton = ({ tokenID, destination, fetch }: URITokenMintButtonP
 
   const handleClick = async () => {
     await submit({ tokenID, destination })
-    fetch()
+    await fetch()
   }
 
   return (

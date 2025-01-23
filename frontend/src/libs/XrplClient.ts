@@ -1,4 +1,4 @@
-import type { AccountObjectsRequest, URITokenMint } from '@transia/xrpl'
+import type { AccountObjectsRequest, URITokenMint, URITokenBuy } from '@transia/xrpl'
 import { Client, Wallet } from '@transia/xrpl'
 import { ALICE_WALLET_SECRET, BOB_WALLET_SECRET, CAROL_WALLET_SECRET, COMPANY_WALLET_SECRET } from '@/constants'
 import type { EmployeeName } from '@/types'
@@ -31,6 +31,10 @@ export class XrplClient {
     return this.#submit(tx, executeWallet)
   }
 
+  async submitURITokenBuy(tx: URITokenBuy, executeWallet: Wallet) {
+    return this.#submit(tx, executeWallet)
+  }
+
   async connect() {
     await this.client.connect()
   }
@@ -56,7 +60,7 @@ export class XrplClient {
     }
   }
 
-  async #submit(tx: URITokenMint, executeWallet: Wallet) {
+  async #submit(tx: URITokenMint | URITokenBuy, executeWallet: Wallet) {
     await this.client.connect()
 
     try {
@@ -66,6 +70,8 @@ export class XrplClient {
       }
 
       tx.NetworkID = await this.client.getNetworkID()
+
+      console.info('submit tx: ', tx)
 
       const response = await this.client.submitAndWait(tx, opts)
       return response

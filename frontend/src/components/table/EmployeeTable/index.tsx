@@ -7,6 +7,7 @@ import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import URITokenMintButton from '@/components/button/URITokenMintButton'
 import URITokenClaimButton from '@/components/button/URITokenClaimButton'
+import TokenFaucetButton from '@/components/button/TokenFaucetButton'
 import { useListURIToken } from '@/hooks/useListURIToken'
 
 const EmployeeTable = () => {
@@ -28,11 +29,14 @@ const EmployeeTable = () => {
             <TableCell>
               {row.id.slice(0, 8)}...{row.id.slice(-8)}
             </TableCell>
-            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.employeeID}</TableCell>
             <TableCell>{row.name}</TableCell>
             <TableCell>
               {!row.isMinted && <URITokenMintButton fetch={fetch} tokenID={row.id} destination={row.name} />}
-              {row.isMinted && <URITokenClaimButton />}
+              {row.isMinted && !row.isReceived && (
+                <URITokenClaimButton fetch={fetch} destination={row.name} URITokenID={row.index || ''} />
+              )}
+              {row.isReceived && <TokenFaucetButton />}
             </TableCell>
           </TableRow>
         ))}
