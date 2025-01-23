@@ -1,8 +1,9 @@
+export type EmployeeName = 'Alice' | 'Bob' | 'Carol'
+
 export type Employee = {
   id: string
-  empolyID: string
-  name: string
-  isMinted: boolean
-  isReceived: boolean
+  name: EmployeeName
+  isMinted?: boolean
+  isReceived?: boolean
   index?: string
 }

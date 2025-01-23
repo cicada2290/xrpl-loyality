@@ -28,10 +28,10 @@ const EmployeeTable = () => {
             <TableCell>
               {row.id.slice(0, 8)}...{row.id.slice(-8)}
             </TableCell>
-            <TableCell>{row.empolyID}</TableCell>
+            <TableCell>{row.name}</TableCell>
             <TableCell>{row.name}</TableCell>
             <TableCell>
-              {!row.isMinted && <URITokenMintButton fetch={fetch} tokenID={row.id} destination={row.empolyID} />}
+              {!row.isMinted && <URITokenMintButton fetch={fetch} tokenID={row.id} destination={row.name} />}
               {row.isMinted && <URITokenClaimButton />}
             </TableCell>
           </TableRow>

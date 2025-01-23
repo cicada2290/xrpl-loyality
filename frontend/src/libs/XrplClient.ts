@@ -1,6 +1,8 @@
 import type { AccountObjectsRequest, URITokenMint } from '@transia/xrpl'
 import { Client, Wallet } from '@transia/xrpl'
 import { ALICE_WALLET_SECRET, BOB_WALLET_SECRET, CAROL_WALLET_SECRET, COMPANY_WALLET_SECRET } from '@/constants'
+import type { EmployeeName } from '@/types'
+
 export class XrplClient {
   private client: Client
 
@@ -8,15 +10,15 @@ export class XrplClient {
     this.client = new Client(url)
   }
 
-  wallet(name: 'alice' | 'bob' | 'carol' | 'company') {
+  wallet(name: EmployeeName | 'Company') {
     switch (name) {
-      case 'alice':
+      case 'Alice':
         return Wallet.fromSeed(ALICE_WALLET_SECRET)
-      case 'bob':
+      case 'Bob':
         return Wallet.fromSeed(BOB_WALLET_SECRET)
-      case 'carol':
+      case 'Carol':
         return Wallet.fromSeed(CAROL_WALLET_SECRET)
-      case 'company':
+      case 'Company':
         return Wallet.fromSeed(COMPANY_WALLET_SECRET)
     }
   }
