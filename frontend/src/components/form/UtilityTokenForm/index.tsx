@@ -1,5 +1,3 @@
-'use client'
-
 import type { CreateUtilityTokenData } from '@/hooks/useCreateUtilityToken'
 import { Controller, useForm } from 'react-hook-form'
 import { XrplClient } from '@/libs/XrplClient'
@@ -9,6 +7,7 @@ import TextField from '@mui/material/TextField'
 import SubmitButton from '@/components/button/SubmitButton'
 import { useCreateUtilityToken } from '@/hooks/useCreateUtilityToken'
 import { Typography } from '@mui/material'
+import { useSnackbar } from 'notistack'
 
 const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
 
@@ -17,11 +16,15 @@ const UtilityTokenForm = () => {
 
   const { loading, submit } = useCreateUtilityToken()
 
+  const { enqueueSnackbar } = useSnackbar()
+
   const onSubmit = async (data: CreateUtilityTokenData) => {
     try {
       await submit(data)
+      enqueueSnackbar('Utility token created successfully', { variant: 'success' })
     } catch (error) {
       console.error(error)
+      enqueueSnackbar('Failed to create utility token', { variant: 'error' })
     }
   }
 

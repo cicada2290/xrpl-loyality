@@ -7,7 +7,7 @@ type PageContainerProps = {
 
 const PageContainer = ({ children, maxWidth = 'xl' }: PageContainerProps) => {
   return (
-    <Container maxWidth={maxWidth} sx={{ py: 10 }}>
+    <Container maxWidth={maxWidth} sx={{ py: 12 }}>
       {children}
     </Container>
   )
