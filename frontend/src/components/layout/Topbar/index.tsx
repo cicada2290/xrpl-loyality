@@ -24,6 +24,7 @@ const Topbar = () => {
         <Box sx={{ flexGrow: 1, display: 'flex', gap: 2 }}>
           <TopbarLinkButton href="/" label="HOME" />
           <TopbarLinkButton href="/employees" label="EMPLOYEES" />
+          <TopbarLinkButton href="/tokens" label="TOKENS" />
           <TopbarLinkButton href="/hooks" label="HOOKS" />
         </Box>
         <Box>

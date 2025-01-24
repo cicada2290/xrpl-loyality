@@ -18,7 +18,7 @@ export const useListURIToken = () => {
 
       const result = await Promise.all(
         employees.map(async (employee) => {
-          const [employeeResponse, companyResponse] = await Promise.all([
+          const [employeeResponse, companyResponse, employeeLinesResponse] = await Promise.all([
             xrplClient.singleRequest({
               command: 'account_objects',
               account: xrplClient.wallet(employee.name).address,
@@ -29,10 +29,16 @@ export const useListURIToken = () => {
               account: xrplClient.wallet('Company').address,
               ledger_index: 'validated',
             }),
+            xrplClient.singleRequest({
+              command: 'account_lines',
+              account: xrplClient.wallet(employee.name).address,
+              ledger_index: 'validated',
+            }),
           ])
 
           console.info('employeeResponse: ', employeeResponse)
           console.info('companyResponse: ', companyResponse)
+          console.info('companyLinesResponse: ', employeeLinesResponse)
 
           const uriToken = [
             ...(employeeResponse?.result.account_objects ?? []),

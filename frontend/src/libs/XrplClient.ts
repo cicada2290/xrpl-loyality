@@ -1,7 +1,16 @@
-import type { AccountObjectsRequest, URITokenMint, URITokenBuy } from '@transia/xrpl'
-import { Client, Wallet } from '@transia/xrpl'
-import { ALICE_WALLET_SECRET, BOB_WALLET_SECRET, CAROL_WALLET_SECRET, COMPANY_WALLET_SECRET } from '@/constants'
 import type { EmployeeName } from '@/types'
+import type {
+  AccountObjectsRequest,
+  AccountObjectsResponse,
+  AccountLinesRequest,
+  AccountLinesResponse,
+  URITokenMint,
+  URITokenBuy,
+  AccountSet,
+  Payment,
+} from '@transia/xrpl'
+import { Client, Wallet, AccountSetAsfFlags } from '@transia/xrpl'
+import { ALICE_WALLET_SECRET, BOB_WALLET_SECRET, CAROL_WALLET_SECRET, COMPANY_WALLET_SECRET } from '@/constants'
 
 export class XrplClient {
   private client: Client
@@ -35,6 +44,51 @@ export class XrplClient {
     return this.#submit(tx, executeWallet)
   }
 
+  async submitPayment(tx: Payment, executeWallet: Wallet) {
+    return this.#submit(tx, executeWallet)
+  }
+
+  async submitMintToken() {
+    try {
+      await this.client.connect()
+
+      console.log('submitMintToken: ', this.wallet('Company').address)
+
+      const accoutnsetResponse = await this.client.submitAndWait(
+        {
+          TransactionType: 'AccountSet',
+          Account: this.wallet('Company').address,
+          SetFlag: AccountSetAsfFlags.asfDefaultRipple,
+          NetworkID: await this.client.getNetworkID(),
+        },
+        { wallet: this.wallet('Company') },
+      )
+
+      console.info('accoutnsetResponse: ', accoutnsetResponse)
+
+      const trustSetResponse = await this.client.submitAndWait(
+        {
+          TransactionType: 'TrustSet',
+          Account: this.wallet('Company').address,
+          LimitAmount: {
+            issuer: this.wallet('Company').address,
+            currency: 'LOY',
+            value: '100000',
+          },
+          NetworkID: await this.client.getNetworkID(),
+        },
+        { wallet: this.wallet('Company') },
+      )
+
+      console.info('trustSetResponse: ', trustSetResponse)
+
+      await this.client.disconnect()
+    } catch (error) {
+      console.error('XrplClient: submitMintToken: ', error)
+      throw error
+    }
+  }
+
   async connect() {
     await this.client.connect()
   }
@@ -43,11 +97,13 @@ export class XrplClient {
     await this.client.disconnect()
   }
 
-  async singleRequest(request: AccountObjectsRequest) {
+  async singleRequest(
+    request: AccountObjectsRequest | AccountLinesRequest,
+  ): Promise<AccountObjectsResponse | AccountLinesResponse> {
     return await this.client.request(request)
   }
 
-  async #request(request: AccountObjectsRequest) {
+  async #request(request: AccountObjectsRequest | AccountLinesRequest) {
     await this.client.connect()
 
     try {
@@ -60,7 +116,7 @@ export class XrplClient {
     }
   }
 
-  async #submit(tx: URITokenMint | URITokenBuy, executeWallet: Wallet) {
+  async #submit(tx: URITokenMint | URITokenBuy | AccountSet | Payment, executeWallet: Wallet) {
     await this.client.connect()
 
     try {

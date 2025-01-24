@@ -20,6 +20,7 @@ const EmployeeTable = () => {
           <TableCell>Token ID</TableCell>
           <TableCell>Employee ID</TableCell>
           <TableCell>Name</TableCell>
+          <TableCell>Balance</TableCell>
           <TableCell>Actions</TableCell>
         </TableRow>
       </TableHead>
@@ -31,12 +32,13 @@ const EmployeeTable = () => {
             </TableCell>
             <TableCell>{row.employeeID}</TableCell>
             <TableCell>{row.name}</TableCell>
+            <TableCell>Balance</TableCell>
             <TableCell>
               {!row.isMinted && <URITokenMintButton fetch={fetch} tokenID={row.id} destination={row.name} />}
               {row.isMinted && !row.isReceived && (
                 <URITokenClaimButton fetch={fetch} destination={row.name} URITokenID={row.index || ''} />
               )}
-              {row.isReceived && <TokenFaucetButton />}
+              {row.isReceived && <TokenFaucetButton employeeName={row.name} />}
             </TableCell>
           </TableRow>
         ))}
