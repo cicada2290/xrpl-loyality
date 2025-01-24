@@ -6,9 +6,6 @@ import Typography from '@mui/material/Typography'
 import WalletConnectButton from '@/components/button/WalletConnectButton'
 import TopbarLinkButton from '@/components/layout/TopbarLinkButton'
 
-import IconButton from '@mui/material/IconButton'
-import MoreIcon from '@mui/icons-material/MoreVert'
-
 const Topbar = () => {
   return (
     <AppBar>
@@ -30,9 +27,6 @@ const Topbar = () => {
         <Box>
           <WalletConnectButton />
         </Box>
-        <IconButton size="large" aria-label="display more actions" edge="end" color="inherit">
-          <MoreIcon />
-        </IconButton>
       </Toolbar>
     </AppBar>
   )
