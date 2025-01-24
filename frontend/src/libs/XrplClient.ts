@@ -8,18 +8,58 @@ import type {
   URITokenBuy,
   AccountSet,
   Payment,
+  TrustSet,
 } from '@transia/xrpl'
 import { Client, Wallet, AccountSetAsfFlags } from '@transia/xrpl'
-import { ALICE_WALLET_SECRET, BOB_WALLET_SECRET, CAROL_WALLET_SECRET, COMPANY_WALLET_SECRET } from '@/constants'
+import {
+  ALICE_WALLET_SECRET,
+  BOB_WALLET_SECRET,
+  CAROL_WALLET_SECRET,
+  COMPANY_WALLET_SECRET,
+  UTILITY_TOKEN_SECRET,
+} from '@/constants'
+
+type BaseRequest = AccountObjectsRequest | AccountLinesRequest
+type BaseTx = URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet
+type UtilityToken = {
+  currency: string
+  issuer: string
+}
+
+type SubmitTx = {
+  tx: BaseTx
+  wallet: Wallet
+}
 
 export class XrplClient {
   private client: Client
 
+  private utilityToken: UtilityToken
+
   constructor(url: string) {
     this.client = new Client(url)
+
+    this.utilityToken = {
+      currency: 'XXX',
+      issuer: this.wallet('UtilityToken').address,
+    }
   }
 
-  wallet(name: EmployeeName | 'Company') {
+  getUtilityToken(): UtilityToken {
+    return this.utilityToken
+  }
+
+  getWallet() {
+    return {
+      alice: Wallet.fromSeed(ALICE_WALLET_SECRET),
+      bob: Wallet.fromSeed(BOB_WALLET_SECRET),
+      carol: Wallet.fromSeed(CAROL_WALLET_SECRET),
+      company: Wallet.fromSeed(COMPANY_WALLET_SECRET),
+      utilityToken: Wallet.fromSeed(UTILITY_TOKEN_SECRET),
+    }
+  }
+
+  wallet(name: EmployeeName | 'Company' | 'UtilityToken') {
     switch (name) {
       case 'Alice':
         return Wallet.fromSeed(ALICE_WALLET_SECRET)
@@ -29,6 +69,8 @@ export class XrplClient {
         return Wallet.fromSeed(CAROL_WALLET_SECRET)
       case 'Company':
         return Wallet.fromSeed(COMPANY_WALLET_SECRET)
+      case 'UtilityToken':
+        return Wallet.fromSeed(UTILITY_TOKEN_SECRET)
     }
   }
 
@@ -41,6 +83,14 @@ export class XrplClient {
   }
 
   async submitURITokenBuy(tx: URITokenBuy, executeWallet: Wallet) {
+    return this.#submit(tx, executeWallet)
+  }
+
+  async submitAccountSet(tx: AccountSet, executeWallet: Wallet) {
+    return this.#submit(tx, executeWallet)
+  }
+
+  async submitTrustSet(tx: TrustSet, executeWallet: Wallet) {
     return this.#submit(tx, executeWallet)
   }
 
@@ -103,6 +153,41 @@ export class XrplClient {
     return await this.client.request(request)
   }
 
+  async multiRequest(requests: BaseRequest[]) {
+    try {
+      await this.connect()
+
+      const responses = await Promise.all(requests.map((request) => this.client.request(request)))
+      return responses
+    } catch (error) {
+      console.error('XrplClient: multiRequest: ', error)
+      throw error
+    } finally {
+      await this.disconnect()
+    }
+  }
+
+  async multiSubmit(params: SubmitTx[]) {
+    try {
+      await this.client.connect()
+
+      const responses = await Promise.all(
+        params.map(async ({ tx, wallet }) => {
+          tx.NetworkID = await this.client.getNetworkID()
+          return this.client.submitAndWait(tx, { wallet })
+        }),
+      )
+
+      console.info('multiSubmit responses: ', responses)
+      return responses
+    } catch (error) {
+      console.error('XrplClient: multiSubmit: ', error)
+      throw error
+    } finally {
+      await this.client.disconnect()
+    }
+  }
+
   async #request(request: AccountObjectsRequest | AccountLinesRequest) {
     await this.client.connect()
 
@@ -116,7 +201,7 @@ export class XrplClient {
     }
   }
 
-  async #submit(tx: URITokenMint | URITokenBuy | AccountSet | Payment, executeWallet: Wallet) {
+  async #submit(tx: URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet, executeWallet: Wallet) {
     await this.client.connect()
 
     try {

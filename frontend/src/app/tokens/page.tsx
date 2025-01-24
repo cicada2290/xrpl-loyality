@@ -1,12 +1,16 @@
+import Box from '@mui/material/Box'
+import PageContainer from '@/components/layout/PageContainer'
 import PageTitle from '@/components/typography/PageTitle'
-import TokenMintButton from '@/components/button/TokenMintButton'
+import UtilityTokenForm from '@/components/form/UtilityTokenForm'
 
 const TokensPage = () => {
   return (
-    <>
+    <PageContainer maxWidth="sm">
       <PageTitle>TOKENS</PageTitle>
-      <TokenMintButton />
-    </>
+      <Box sx={{ mt: 4 }}>
+        <UtilityTokenForm />
+      </Box>
+    </PageContainer>
   )
 }
 
