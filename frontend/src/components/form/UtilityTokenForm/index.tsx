@@ -1,5 +1,6 @@
 'use client'
 
+import type { CreateUtilityTokenData } from '@/hooks/useCreateUtilityToken'
 import { Controller, useForm } from 'react-hook-form'
 import { XrplClient } from '@/libs/XrplClient'
 import { XAHAU_WSS_ENDPOINT } from '@/constants'
@@ -9,21 +10,14 @@ import SubmitButton from '@/components/button/SubmitButton'
 import { useCreateUtilityToken } from '@/hooks/useCreateUtilityToken'
 import { Typography } from '@mui/material'
 
-type UtilityTokenFormData = {
-  currency: string
-  issuer: string
-  recipient: string
-  issueAmount: number
-}
-
 const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
 
 const UtilityTokenForm = () => {
-  const { control, handleSubmit } = useForm<UtilityTokenFormData>({})
+  const { control, handleSubmit } = useForm<CreateUtilityTokenData>({})
 
   const { loading, submit } = useCreateUtilityToken()
 
-  const onSubmit = async (data: UtilityTokenFormData) => {
+  const onSubmit = async (data: CreateUtilityTokenData) => {
     try {
       await submit(data)
     } catch (error) {
