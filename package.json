@@ -2,9 +2,7 @@
   "name": "xrpl-loyality",
   "version": "1.0.0",
   "license": "MIT",
-  "workspaces": [
-    "frontend"
-  ],
+  "workspaces": ["frontend"],
   "scripts": {
     "dev:frontend": "turbo run dev --filter=frontend",
     "build": "turbo run build",
