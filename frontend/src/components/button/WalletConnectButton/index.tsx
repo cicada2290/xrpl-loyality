@@ -1,9 +1,9 @@
 'use client'
 
-import { isInstalled, getAddress } from '@gemwallet/api'
+import useAccountStore from '@/store'
+import { getAddress, isInstalled } from '@gemwallet/api'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import useAccountStore from '@/store'
 
 const WalletConnectButton = () => {
   const { account, setAccount } = useAccountStore()
@@ -34,7 +34,12 @@ const WalletConnectButton = () => {
       {account ? (
         <Typography>{account}</Typography>
       ) : (
-        <Button variant="outlined" color="inherit" disableElevation onClick={handleConnectWallet}>
+        <Button
+          variant="outlined"
+          color="inherit"
+          disableElevation
+          onClick={handleConnectWallet}
+        >
           Connect Wallet
         </Button>
       )}

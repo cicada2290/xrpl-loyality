@@ -1,8 +1,8 @@
 'use client'
 
+import { useClaimURIToken } from '@/hooks/useClaimURIToken'
 import type { EmployeeName } from '@/types'
 import Button from '@mui/material/Button'
-import { useClaimURIToken } from '@/hooks/useClaimURIToken'
 
 interface URITokenClaimButtonProps {
   destination: EmployeeName
@@ -10,7 +10,11 @@ interface URITokenClaimButtonProps {
   fetch: () => Promise<void>
 }
 
-const URITokenClaimButton = ({ destination, URITokenID, fetch }: URITokenClaimButtonProps) => {
+const URITokenClaimButton = ({
+  destination,
+  URITokenID,
+  fetch
+}: URITokenClaimButtonProps) => {
   const { submit, loading } = useClaimURIToken()
 
   const handleClick = async () => {
@@ -19,7 +23,12 @@ const URITokenClaimButton = ({ destination, URITokenID, fetch }: URITokenClaimBu
   }
 
   return (
-    <Button variant="outlined" disableElevation loading={loading} onClick={handleClick}>
+    <Button
+      variant="outlined"
+      disableElevation
+      loading={loading}
+      onClick={handleClick}
+    >
       Claim
     </Button>
   )

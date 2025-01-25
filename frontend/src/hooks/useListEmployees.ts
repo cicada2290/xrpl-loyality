@@ -1,9 +1,12 @@
-import type { AccountLinesResponse, AccountObjectsResponse } from '@transia/xrpl'
-import type { Employee } from '@/types'
-import { useEffect, useState } from 'react'
 import { XAHAU_WSS_ENDPOINT } from '@/constants'
-import { XrplClient } from '@/libs/XrplClient'
 import { employees } from '@/constants/employees'
+import { XrplClient } from '@/libs/XrplClient'
+import type { Employee } from '@/types'
+import type {
+  AccountLinesResponse,
+  AccountObjectsResponse
+} from '@transia/xrpl'
+import { useEffect, useState } from 'react'
 
 const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
 
@@ -17,42 +20,59 @@ export const useListEmployees = () => {
     try {
       const result: Employee[] = []
 
-      const [companyAccountObjectsResponse, companyAccountLinesResponse] = (await xrplClient.multiRequest([
-        {
-          command: 'account_objects',
-          account: xrplClient.wallet('Company').address,
-          ledger_index: 'validated',
-        },
-        {
-          command: 'account_lines',
-          account: xrplClient.wallet('Company').address,
-          ledger_index: 'validated',
-        },
-      ])) as [AccountObjectsResponse, AccountLinesResponse]
-
-      console.info('useListEmployees: companyAccountObjects: ', companyAccountObjectsResponse)
-      console.info('useListEmployees: companyAccountLines: ', companyAccountLinesResponse)
-
-      const companyURIToken = companyAccountObjectsResponse.result?.account_objects
-        .filter((data) => data.LedgerEntryType === 'URIToken')
-        .filter((data) => data.Issuer === xrplClient.wallet('Company').address)
-
-      for (const employee of employees) {
-        const [employeeAccountObjectsResponse, employeeAccountLinesResponse] = (await xrplClient.multiRequest([
+      const [companyAccountObjectsResponse, companyAccountLinesResponse] =
+        (await xrplClient.multiRequest([
           {
             command: 'account_objects',
-            account: xrplClient.wallet(employee.name).address,
-            ledger_index: 'validated',
+            account: xrplClient.wallet('Company').address,
+            ledger_index: 'validated'
           },
           {
             command: 'account_lines',
-            account: xrplClient.wallet(employee.name).address,
-            ledger_index: 'validated',
-          },
+            account: xrplClient.wallet('Company').address,
+            ledger_index: 'validated'
+          }
         ])) as [AccountObjectsResponse, AccountLinesResponse]
 
-        console.info('useListEmployees: employeeAccountObjects: ', employeeAccountObjectsResponse)
-        console.info('useListEmployees: emmployeeAccountLists: ', employeeAccountLinesResponse)
+      console.info(
+        'useListEmployees: companyAccountObjects: ',
+        companyAccountObjectsResponse
+      )
+      console.info(
+        'useListEmployees: companyAccountLines: ',
+        companyAccountLinesResponse
+      )
+
+      const companyURIToken =
+        companyAccountObjectsResponse.result?.account_objects
+          .filter((data) => data.LedgerEntryType === 'URIToken')
+          .filter(
+            (data) => data.Issuer === xrplClient.wallet('Company').address
+          )
+
+      for (const employee of employees) {
+        const [employeeAccountObjectsResponse, employeeAccountLinesResponse] =
+          (await xrplClient.multiRequest([
+            {
+              command: 'account_objects',
+              account: xrplClient.wallet(employee.name).address,
+              ledger_index: 'validated'
+            },
+            {
+              command: 'account_lines',
+              account: xrplClient.wallet(employee.name).address,
+              ledger_index: 'validated'
+            }
+          ])) as [AccountObjectsResponse, AccountLinesResponse]
+
+        console.info(
+          'useListEmployees: employeeAccountObjects: ',
+          employeeAccountObjectsResponse
+        )
+        console.info(
+          'useListEmployees: emmployeeAccountLists: ',
+          employeeAccountLinesResponse
+        )
 
         const uriToken = employeeAccountObjectsResponse.result?.account_objects
           .filter((data) => data.LedgerEntryType === 'URIToken')
@@ -60,14 +80,18 @@ export const useListEmployees = () => {
           .shift()
 
         const balance = employeeAccountLinesResponse.result?.lines
-          .filter((data) => data.currency === xrplClient.getUtilityToken().currency)
+          .filter(
+            (data) => data.currency === xrplClient.getUtilityToken().currency
+          )
           .shift()
 
         console.info('useListEmployees: balance: ', balance)
 
         const employeeID = xrplClient.wallet(employee.name).address
         const isMinted =
-          !!companyURIToken.filter((data) => employee.id === data.Digest).shift() !== undefined || !!uriToken
+          !!companyURIToken
+            .filter((data) => employee.id === data.Digest)
+            .shift() !== undefined || !!uriToken
         const isReceived = isMinted ? employeeID === uriToken?.Owner : false
 
         result.push({
@@ -76,7 +100,7 @@ export const useListEmployees = () => {
           isMinted,
           isReceived,
           balance: balance?.balance ? BigInt(balance.balance) : 0n,
-          index: uriToken?.index,
+          index: uriToken?.index
         })
       }
 
@@ -96,6 +120,6 @@ export const useListEmployees = () => {
   return {
     data,
     loading,
-    fetch,
+    fetch
   }
 }

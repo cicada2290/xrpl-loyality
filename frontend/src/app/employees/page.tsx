@@ -1,9 +1,9 @@
 'use client'
 
-import Box from '@mui/material/Box'
 import PageContainer from '@/components/layout/PageContainer'
-import PageTitle from '@/components/typography/PageTitle'
 import EmployeeTable from '@/components/table/EmployeeTable'
+import PageTitle from '@/components/typography/PageTitle'
+import Box from '@mui/material/Box'
 import { SnackbarProvider } from 'notistack'
 
 const EmployeesPage = () => {

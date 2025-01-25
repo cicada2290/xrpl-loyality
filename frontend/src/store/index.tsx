@@ -7,7 +7,7 @@ type State = {
 
 const useAccountStore = create<State>((set) => ({
   account: '',
-  setAccount: (account: string) => set({ account }),
+  setAccount: (account: string) => set({ account })
 }))
 
 export default useAccountStore

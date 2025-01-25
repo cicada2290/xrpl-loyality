@@ -1,8 +1,8 @@
 'use client'
 
+import { useURITokenMint } from '@/hooks/useMintURIToken'
 import type { EmployeeName } from '@/types'
 import Button from '@mui/material/Button'
-import { useURITokenMint } from '@/hooks/useMintURIToken'
 
 interface URITokenMintButtonProps {
   tokenID: string
@@ -10,7 +10,11 @@ interface URITokenMintButtonProps {
   fetch: () => void
 }
 
-const URITokenMintButton = ({ tokenID, destination, fetch }: URITokenMintButtonProps) => {
+const URITokenMintButton = ({
+  tokenID,
+  destination,
+  fetch
+}: URITokenMintButtonProps) => {
   const { submit, loading } = useURITokenMint()
 
   const handleClick = async () => {
@@ -19,7 +23,12 @@ const URITokenMintButton = ({ tokenID, destination, fetch }: URITokenMintButtonP
   }
 
   return (
-    <Button variant="outlined" disableElevation loading={loading} onClick={handleClick}>
+    <Button
+      variant="outlined"
+      disableElevation
+      loading={loading}
+      onClick={handleClick}
+    >
       Mint
     </Button>
   )

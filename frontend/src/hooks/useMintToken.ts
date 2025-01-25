@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { XAHAU_WSS_ENDPOINT } from '@/constants'
 import { XrplClient } from '@/libs'
+import { useState } from 'react'
 
 const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
 
@@ -22,6 +22,6 @@ export const useMintToken = () => {
   return {
     loading,
     submit,
-    setLoading,
+    setLoading
   }
 }
