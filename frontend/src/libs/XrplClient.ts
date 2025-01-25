@@ -74,8 +74,18 @@ export class XrplClient {
     }
   }
 
-  async requestAccountObjects(request: AccountObjectsRequest) {
-    return this.#request(request)
+  async requestAccountLines(request: AccountLinesRequest): Promise<AccountLinesResponse> {
+    await this.connect()
+    const response = await this.#request(request)
+    await this.disconnect()
+    return response as AccountLinesResponse
+  }
+
+  async requestAccountObjects(request: AccountObjectsRequest): Promise<AccountObjectsResponse> {
+    await this.connect()
+    const response = await this.#request(request)
+    await this.disconnect()
+    return response as AccountObjectsResponse
   }
 
   async submitURITokenMint(tx: URITokenMint, executeWallet: Wallet) {
@@ -156,9 +166,7 @@ export class XrplClient {
   async multiRequest(requests: BaseRequest[]) {
     try {
       await this.connect()
-
-      const responses = await Promise.all(requests.map((request) => this.client.request(request)))
-      return responses
+      return await Promise.all(requests.map((request) => this.#request(request)))
     } catch (error) {
       console.error('XrplClient: multiRequest: ', error)
       throw error
@@ -188,16 +196,16 @@ export class XrplClient {
     }
   }
 
-  async #request(request: AccountObjectsRequest | AccountLinesRequest) {
-    await this.client.connect()
+  // ==============================
+  // private methods
+  // ==============================
 
+  async #request(request: AccountObjectsRequest | AccountLinesRequest) {
     try {
       return await this.client.request(request)
     } catch (error) {
       console.error('XrplClient: request: ', error)
       throw error
-    } finally {
-      await this.client.disconnect()
     }
   }
 

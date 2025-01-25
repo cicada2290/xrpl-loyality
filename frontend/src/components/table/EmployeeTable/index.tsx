@@ -10,10 +10,10 @@ import Typography from '@mui/material/Typography'
 import URITokenMintButton from '@/components/button/URITokenMintButton'
 import URITokenClaimButton from '@/components/button/URITokenClaimButton'
 import TokenFaucetButton from '@/components/button/TokenFaucetButton'
-import { useListURIToken } from '@/hooks/useListURIToken'
+import { useListEmployees } from '@/hooks/useListEmployees'
 
 const EmployeeTable = () => {
-  const { data, fetch } = useListURIToken()
+  const { data, fetch } = useListEmployees()
 
   return (
     <Grid container spacing={2}>
@@ -44,7 +44,7 @@ const EmployeeTable = () => {
                 </TableCell>
                 <TableCell>{row.employeeID}</TableCell>
                 <TableCell>{row.name}</TableCell>
-                <TableCell>Balance</TableCell>
+                <TableCell>{row.balance}</TableCell>
                 <TableCell>
                   {!row.isMinted && <URITokenMintButton fetch={fetch} tokenID={row.id} destination={row.name} />}
                   {row.isMinted && !row.isReceived && (
