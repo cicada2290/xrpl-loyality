@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { XrplClient } from '@/libs/XrplClient'
 import { XAHAU_WSS_ENDPOINT } from '@/constants'
+import { XrplClient } from '@/libs/XrplClient'
+import { useState } from 'react'
 
 const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
 
@@ -18,10 +18,10 @@ export const useTrustSet = () => {
           LimitAmount: {
             issuer: xrplClient.getUtilityToken().issuer,
             currency: xrplClient.getUtilityToken().currency,
-            value: '100000000000',
-          },
+            value: '100000000000'
+          }
         },
-        xrplClient.wallet('Company'),
+        xrplClient.wallet('Company')
       )
       console.info('useTrustSet: ', response)
     } catch (error) {

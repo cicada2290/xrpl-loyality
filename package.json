@@ -2,15 +2,12 @@
   "name": "xrpl-loyality",
   "version": "1.0.0",
   "license": "MIT",
-  "workspaces": [
-    "frontend"
-  ],
+  "workspaces": ["frontend"],
   "scripts": {
     "dev:frontend": "turbo run dev --filter=frontend",
     "build": "turbo run build",
     "lint": "turbo run lint",
-    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json}\"",
-    "format:write": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
+    "format:write": "biome format --write --verbose .",
     "test": "turbo run test",
     "prepare": "husky"
   },
@@ -19,6 +16,7 @@
   },
   "packageManager": "yarn@4.6.0",
   "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
     "husky": "^9.1.7",
     "prettier": "^3.4.2",
     "tsx": "^4.19.2",

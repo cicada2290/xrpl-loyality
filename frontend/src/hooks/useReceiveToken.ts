@@ -1,7 +1,7 @@
-import type { EmployeeName } from '@/types'
-import { useState } from 'react'
 import { XAHAU_WSS_ENDPOINT } from '@/constants'
 import { XrplClient } from '@/libs'
+import type { EmployeeName } from '@/types'
+import { useState } from 'react'
 
 const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
 
@@ -20,10 +20,10 @@ export const useReceiveToken = () => {
           Amount: {
             value: '10',
             currency: 'LOY',
-            issuer: xrplClient.wallet('Company').address,
-          },
+            issuer: xrplClient.wallet('Company').address
+          }
         },
-        xrplClient.wallet('Company'),
+        xrplClient.wallet('Company')
       )
 
       console.info('Payment Response: ', paymentResponse)
@@ -37,6 +37,6 @@ export const useReceiveToken = () => {
   return {
     loading,
     submit,
-    setLoading,
+    setLoading
   }
 }
