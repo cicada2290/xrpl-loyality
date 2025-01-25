@@ -85,9 +85,9 @@ export const useListEmployees = () => {
           )
           .shift()
 
-        console.info('useListEmployees: balance: ', balance)
+        console.info('useListEmployees: balance: ', balance);
 
-        const employeeID = xrplClient.wallet(employee.name).address;
+        const employeeID = xrplClient.wallet(employee.name).address
         const isMinted =
           !!companyURIToken
             .filter((data) => employee.id === data.Digest)
