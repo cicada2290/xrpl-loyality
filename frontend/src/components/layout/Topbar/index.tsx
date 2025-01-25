@@ -6,9 +6,6 @@ import Typography from '@mui/material/Typography'
 import WalletConnectButton from '@/components/button/WalletConnectButton'
 import TopbarLinkButton from '@/components/layout/TopbarLinkButton'
 
-import IconButton from '@mui/material/IconButton'
-import MoreIcon from '@mui/icons-material/MoreVert'
-
 const Topbar = () => {
   return (
     <AppBar>
@@ -24,14 +21,12 @@ const Topbar = () => {
         <Box sx={{ flexGrow: 1, display: 'flex', gap: 2 }}>
           <TopbarLinkButton href="/" label="HOME" />
           <TopbarLinkButton href="/employees" label="EMPLOYEES" />
+          <TopbarLinkButton href="/tokens" label="TOKENS" />
           <TopbarLinkButton href="/hooks" label="HOOKS" />
         </Box>
         <Box>
           <WalletConnectButton />
         </Box>
-        <IconButton size="large" aria-label="display more actions" edge="end" color="inherit">
-          <MoreIcon />
-        </IconButton>
       </Toolbar>
     </AppBar>
   )

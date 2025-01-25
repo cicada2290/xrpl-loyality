@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { APP_NAME } from '@/constants'
-import Container from '@mui/material/Container'
 import Topbar from '@/components/layout/Topbar'
 
 const geistSans = Geist({
@@ -28,9 +27,7 @@ const RootLayout = ({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
         <Topbar />
-        <Container maxWidth="xl" sx={{ py: 10 }}>
-          {children}
-        </Container>
+        {children}
       </body>
     </html>
   )

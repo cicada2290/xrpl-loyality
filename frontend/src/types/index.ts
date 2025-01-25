@@ -7,4 +7,5 @@ export type Employee = {
   isMinted?: boolean
   isReceived?: boolean
   index?: string
+  balance?: bigint
 }
