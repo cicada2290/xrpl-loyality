@@ -67,7 +67,7 @@ export const useListEmployees = () => {
 
         console.info(
           'useListEmployees: employeeAccountObjects: ',
-          employeeAccountObjectsResponse
+          employeeAccountObjectsResponse,
         )
         console.info(
           'useListEmployees: emmployeeAccountLists: ',
@@ -85,7 +85,7 @@ export const useListEmployees = () => {
           )
           .shift()
 
-        console.info('useListEmployees: balance: ', balance)
+        console.info('useListEmployees: balance: ', balance);
 
         const employeeID = xrplClient.wallet(employee.name).address
         const isMinted =
