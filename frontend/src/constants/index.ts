@@ -9,15 +9,15 @@ export const NFTOKEN_TAXON_ID = process.env.NEXT_PUBLIC_NFTOKEN_TAXON_ID
 
 export const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL
 
-export const ALICE_WALLET_SECRET =
-  process.env.NEXT_PUBLIC_ALICE_WALLET_SECRET || 'sa3wk2Tre5X3HRMYhz1eaj7ntXVk1'
-export const BOB_WALLET_SECRET =
-  process.env.NEXT_PUBLIC_BOB_WALLET_SECRET || 'snHAKeDNCSz8B7UtHY28Jp6cSKEYD'
-export const CAROL_WALLET_SECRET =
-  process.env.NEXT_PUBLIC_CAROL_WALLET_SECRET || 'shaLKoutS4EFG8XrCB4TMT5FRHfDv'
-export const COMPANY_WALLET_SECRET =
-  process.env.NEXT_PUBLIC_COMPANY_WALLET_SECRET ||
-  'ssGnwZv91SgVubwMAwsWoRvyggNNw'
-export const UTILITY_TOKEN_SECRET =
-  process.env.NEXT_PUBLIC_UTILITY_TOKEN_SECRET ||
-  'spqCcVP9BYv28aJEukzypbQuK4WDB'
+export const WALLET_SEEDS = {
+  ALICE: 'snixUxC9hGc6hsKLhSdmPmrzQMoJf',
+  BOB: 'snHAKeDNCSz8B7UtHY28Jp6cSKEYD',
+  CAROL: 'shaLKoutS4EFG8XrCB4TMT5FRHfDv',
+  DAVE: 'ssCLqn6cPwRySuBUutbtubFhrCaaz',
+  EVE: 'shKyb8VikJHjF8jEcE6erBHQPZL2E',
+  COMPANY: 'ssmj2XB7jqyowF8MJX8GqphZk97js',
+  UTILITY_TOKEN: 'spqCcVP9BYv28aJEukzypbQuK4WDB'
+}
+
+export const COMPANY_XAHAU_CONFIG_URL =
+  'https://xxxx.com/.well-known/xah-ledger.toml'
