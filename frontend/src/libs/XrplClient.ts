@@ -1,115 +1,130 @@
-import {
-  ALICE_WALLET_SECRET,
-  BOB_WALLET_SECRET,
-  CAROL_WALLET_SECRET,
-  COMPANY_WALLET_SECRET,
-  UTILITY_TOKEN_SECRET
-} from '@/constants'
-import type { EmployeeName } from '@/types'
 import type {
   AccountLinesRequest,
   AccountLinesResponse,
   AccountObjectsRequest,
   AccountObjectsResponse,
+  AccountInfoRequest,
+  AccountInfoResponse,
   AccountSet,
   Payment,
   TrustSet,
   URITokenBuy,
   URITokenMint
 } from '@transia/xrpl'
+import type { EmployeeName } from '@/types'
 import { AccountSetAsfFlags, Client, Wallet } from '@transia/xrpl'
+import { getWallet } from '@/utils/wallet'
 
-type BaseRequest = AccountObjectsRequest | AccountLinesRequest
-type BaseTx = URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet
-type UtilityToken = {
-  currency: string
-  issuer: string
-}
+type RequestCommandParams =
+  | AccountObjectsRequest
+  | AccountLinesRequest
+  | AccountInfoRequest
 
-type SubmitTx = {
-  tx: BaseTx
+type SubmitTransactionParams = {
+  tx: URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet
   wallet: Wallet
 }
+
+const UTILITY_TOKEN_CURRENCY = 'LOY'
 
 export class XrplClient {
   private client: Client
 
-  private utilityToken: UtilityToken
-
   constructor(url: string) {
     this.client = new Client(url)
-
-    this.utilityToken = {
-      currency: 'XXX',
-      issuer: this.wallet('UtilityToken').address
-    }
   }
 
-  getUtilityToken(): UtilityToken {
-    return this.utilityToken
+  wallet(accountName: EmployeeName | 'Company' | 'UtilityToken'): Wallet {
+    return getWallet(accountName)
   }
 
-  getWallet() {
+  utilityToken() {
     return {
-      alice: Wallet.fromSeed(ALICE_WALLET_SECRET),
-      bob: Wallet.fromSeed(BOB_WALLET_SECRET),
-      carol: Wallet.fromSeed(CAROL_WALLET_SECRET),
-      company: Wallet.fromSeed(COMPANY_WALLET_SECRET),
-      utilityToken: Wallet.fromSeed(UTILITY_TOKEN_SECRET)
+      issuer: this.wallet('UtilityToken').address,
+      currency: UTILITY_TOKEN_CURRENCY
     }
   }
 
-  wallet(name: EmployeeName | 'Company' | 'UtilityToken') {
-    switch (name) {
-      case 'Alice':
-        return Wallet.fromSeed(ALICE_WALLET_SECRET)
-      case 'Bob':
-        return Wallet.fromSeed(BOB_WALLET_SECRET)
-      case 'Carol':
-        return Wallet.fromSeed(CAROL_WALLET_SECRET)
-      case 'Company':
-        return Wallet.fromSeed(COMPANY_WALLET_SECRET)
-      case 'UtilityToken':
-        return Wallet.fromSeed(UTILITY_TOKEN_SECRET)
-    }
+  async connect() {
+    await this.client.connect()
   }
 
+  async disconnect() {
+    await this.client.disconnect()
+  }
+
+  /**
+   * request account lines
+   * @param request - AccountLinesRequest
+   * @returns AccountLinesResponse
+   */
   async requestAccountLines(
     request: AccountLinesRequest
   ): Promise<AccountLinesResponse> {
-    await this.connect()
-    const response = await this.#request(request)
-    await this.disconnect()
-    return response as AccountLinesResponse
+    return await this.#withConnection(async () => {
+      const response = await this.#request(request)
+      return response as AccountLinesResponse
+    })
   }
 
+  /**
+   * request account objects
+   * @param request - AccountObjectsRequest
+   * @returns AccountObjectsResponse
+   */
   async requestAccountObjects(
     request: AccountObjectsRequest
   ): Promise<AccountObjectsResponse> {
-    await this.connect()
-    const response = await this.#request(request)
-    await this.disconnect()
-    return response as AccountObjectsResponse
+    return await this.#withConnection(async () => {
+      const response = await this.#request(request)
+      return response as AccountObjectsResponse
+    })
+  }
+
+  /**
+   * request account root
+   * @param account - string
+   * @returns AccountInfoResponse
+   */
+  async requestAccountRoot(account: string): Promise<AccountInfoResponse> {
+    return await this.#withConnection(async () => {
+      const response = await this.#request({
+        command: 'account_info',
+        account,
+        ledger_index: 'validated'
+      })
+      return response as AccountInfoResponse
+    })
   }
 
   async submitURITokenMint(tx: URITokenMint, executeWallet: Wallet) {
-    return this.#submit(tx, executeWallet)
+    return await this.#withConnection(async () => {
+      return await this.#submit(tx, executeWallet)
+    })
   }
 
   async submitURITokenBuy(tx: URITokenBuy, executeWallet: Wallet) {
-    return this.#submit(tx, executeWallet)
+    return await this.#withConnection(async () => {
+      return await this.#submit(tx, executeWallet)
+    })
   }
 
   async submitAccountSet(tx: AccountSet, executeWallet: Wallet) {
-    return this.#submit(tx, executeWallet)
+    return await this.#withConnection(async () => {
+      return await this.#submit(tx, executeWallet)
+    })
   }
 
   async submitTrustSet(tx: TrustSet, executeWallet: Wallet) {
-    return this.#submit(tx, executeWallet)
+    return await this.#withConnection(async () => {
+      return await this.#submit(tx, executeWallet)
+    })
   }
 
   async submitPayment(tx: Payment, executeWallet: Wallet) {
-    return this.#submit(tx, executeWallet)
+    return await this.#withConnection(async () => {
+      return await this.#submit(tx, executeWallet)
+    })
   }
 
   async submitMintToken() {
@@ -153,52 +168,32 @@ export class XrplClient {
     }
   }
 
-  async connect() {
-    await this.client.connect()
-  }
-
-  async disconnect() {
-    await this.client.disconnect()
-  }
-
-  async singleRequest(
-    request: AccountObjectsRequest | AccountLinesRequest
-  ): Promise<AccountObjectsResponse | AccountLinesResponse> {
-    return await this.client.request(request)
-  }
-
-  async multiRequest(requests: BaseRequest[]) {
+  async multiRequest(requests: RequestCommandParams[]) {
     try {
-      await this.connect()
-      return await Promise.all(
-        requests.map((request) => this.#request(request))
-      )
+      return await this.#withConnection(async () => {
+        return await Promise.all(
+          requests.map((request) => this.#request(request))
+        )
+      })
     } catch (error) {
       console.error('XrplClient: multiRequest: ', error)
       throw error
-    } finally {
-      await this.disconnect()
     }
   }
 
-  async multiSubmit(params: SubmitTx[]) {
+  async multiSubmit(params: SubmitTransactionParams[]) {
     try {
-      await this.client.connect()
-
-      const responses = await Promise.all(
-        params.map(async ({ tx, wallet }) => {
-          tx.NetworkID = await this.client.getNetworkID()
-          return this.client.submitAndWait(tx, { wallet })
-        })
-      )
-
-      console.info('multiSubmit responses: ', responses)
-      return responses
+      return await this.#withConnection(async () => {
+        return await Promise.all(
+          params.map(async ({ tx, wallet }) => {
+            tx.NetworkID = await this.client.getNetworkID()
+            return await this.#submit(tx, wallet)
+          })
+        )
+      })
     } catch (error) {
       console.error('XrplClient: multiSubmit: ', error)
       throw error
-    } finally {
-      await this.client.disconnect()
     }
   }
 
@@ -206,7 +201,20 @@ export class XrplClient {
   // private methods
   // ==============================
 
-  async #request(request: AccountObjectsRequest | AccountLinesRequest) {
+  async #withConnection(operation: () => Promise<any>) {
+    try {
+      await this.client.connect()
+      return await operation()
+    } catch (error) {
+      throw error
+    } finally {
+      await this.client.disconnect()
+    }
+  }
+
+  async #request(
+    request: AccountObjectsRequest | AccountLinesRequest | AccountInfoRequest
+  ) {
     try {
       return await this.client.request(request)
     } catch (error) {
@@ -219,25 +227,16 @@ export class XrplClient {
     tx: URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet,
     executeWallet: Wallet
   ) {
-    await this.client.connect()
-
     try {
-      const opts = {
-        wallet: executeWallet,
-        autofill: true
-      }
-
       tx.NetworkID = await this.client.getNetworkID()
 
-      console.info('submit tx: ', tx)
-
-      const response = await this.client.submitAndWait(tx, opts)
-      return response
+      return await this.client.submitAndWait(tx, {
+        wallet: executeWallet,
+        autofill: true
+      })
     } catch (error) {
       console.error('XrplClient: submit: ', error)
       throw error
-    } finally {
-      await this.client.disconnect()
     }
   }
 }
