@@ -20,7 +20,7 @@ const TokenFaucetButton = ({
       loading={loading}
       onClick={() => submit(employeeName)}
     >
-      Send 10 {xrplClient.getUtilityToken().currency}
+      Send 10 {xrplClient.utilityToken().currency}
     </Button>
   )
 }

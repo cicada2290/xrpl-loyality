@@ -5,12 +5,18 @@ import URITokenClaimButton from '@/components/button/URITokenClaimButton'
 import URITokenMintButton from '@/components/button/URITokenMintButton'
 import { useListEmployees } from '@/hooks/useListEmployees'
 import Grid from '@mui/material/Grid2'
+import IconButton from '@mui/material/IconButton'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import InfoIcon from '@mui/icons-material/Info'
+
+const info =
+  'The id assigns a unique identifier to each employee by generating a 256-bit hash, ensuring data uniqueness and is also used in the Degit of URIToken.'
 
 const EmployeeTable = () => {
   const { data, fetch } = useListEmployees()
@@ -29,9 +35,16 @@ const EmployeeTable = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Token ID</TableCell>
-              <TableCell>Employee ID</TableCell>
+              <TableCell>
+                ID
+                <Tooltip title={info} placement="top-start">
+                  <IconButton size="small">
+                    <InfoIcon />
+                  </IconButton>
+                </Tooltip>
+              </TableCell>
               <TableCell>Name</TableCell>
+              <TableCell>Address</TableCell>
               <TableCell>Balance</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -40,11 +53,21 @@ const EmployeeTable = () => {
             {data.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>
-                  {row.id.slice(0, 8)}...{row.id.slice(-8)}
+                  <Tooltip title={row.id} placement="top-start">
+                    <Typography variant="body2">
+                      {row.id.slice(0, 6)}...{row.id.slice(-6)}
+                    </Typography>
+                  </Tooltip>
                 </TableCell>
-                <TableCell>{row.employeeID}</TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.balance}</TableCell>
+                <TableCell>
+                  <Typography variant="body2">{row.name}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2">{row.address}</Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography variant="body2">{row.balance}</Typography>
+                </TableCell>
                 <TableCell>
                   {!row.isMinted && (
                     <URITokenMintButton
