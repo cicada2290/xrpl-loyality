@@ -2,7 +2,7 @@ import { BACKEND_API_URL, XAHAU_WSS_ENDPOINT } from '@/constants'
 import { XrplClient } from '@/libs'
 import type { EmployeeName } from '@/types'
 import type { URITokenMint } from '@transia/xrpl'
-import { URITokenMintFlags, convertStringToHex } from '@transia/xrpl'
+import { URITokenMintFlags, convertStringToHex, Wallet } from '@transia/xrpl'
 import { useState } from 'react'
 
 const EMPLOYEE_ID_CARD_URI = `${BACKEND_API_URL}/api/employee`
@@ -10,6 +10,7 @@ const EMPLOYEE_ID_CARD_URI = `${BACKEND_API_URL}/api/employee`
 export type SubmitRequest = {
   tokenID: string
   destination: EmployeeName
+  executeWallet: Wallet
 }
 
 const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
@@ -19,7 +20,8 @@ export const useURITokenMint = () => {
 
   const submit = async ({
     tokenID,
-    destination
+    destination,
+    executeWallet
   }: SubmitRequest): Promise<void> => {
     setLoading(true)
 
@@ -29,7 +31,7 @@ export const useURITokenMint = () => {
       const tx: URITokenMint = {
         TransactionType: 'URITokenMint',
         Amount: '0',
-        Account: xrplClient.wallet('Company').address,
+        Account: executeWallet.address,
         Destination: xrplClient.wallet(destination).address,
         Digest: tokenID,
         URI: convertStringToHex(`${EMPLOYEE_ID_CARD_URI}/${tokenID}`),
@@ -38,10 +40,7 @@ export const useURITokenMint = () => {
 
       console.info('useURITokenMint: submit: ', tx)
 
-      const response = await xrplClient.submitURITokenMint(
-        tx,
-        xrplClient.wallet('Company')
-      )
+      const response = await xrplClient.submitURITokenMint(tx, executeWallet)
       console.info('useURITokenMint: submit: ', response)
     } catch (error) {
       console.error('useURITokenMint: submit: ', error)

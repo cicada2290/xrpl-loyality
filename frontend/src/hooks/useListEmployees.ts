@@ -90,15 +90,17 @@ export const useListEmployees = () => {
 
         // Check if the company holds the NFT
         const isHoldNFTCompany =
-          !!companyURIToken
+          companyURIToken
             .filter((data) => employee.id === data.Digest)
             .shift() !== undefined
+
+        console.log('== isHoldNFTCompany ==: ', isHoldNFTCompany)
 
         // Check if the employee holds the NFT
         const isHoldNFTEmployee = !!uriToken
 
         // Check if the NFT is minted
-        const isMintedNFT = isHoldNFTCompany && isHoldNFTEmployee
+        const isMintedNFT = isHoldNFTCompany || isHoldNFTEmployee
 
         // Check if the NFT is received
         const isReceivedNFT = isMintedNFT ? address === uriToken?.Owner : false
