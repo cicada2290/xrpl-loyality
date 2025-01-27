@@ -1,23 +1,23 @@
-import type { EmployeeName } from '@/types'
-import type {
-  AccountObjectsRequest,
-  AccountObjectsResponse,
-  AccountLinesRequest,
-  AccountLinesResponse,
-  URITokenMint,
-  URITokenBuy,
-  AccountSet,
-  Payment,
-  TrustSet,
-} from '@transia/xrpl'
-import { Client, Wallet, AccountSetAsfFlags } from '@transia/xrpl'
 import {
   ALICE_WALLET_SECRET,
   BOB_WALLET_SECRET,
   CAROL_WALLET_SECRET,
   COMPANY_WALLET_SECRET,
-  UTILITY_TOKEN_SECRET,
+  UTILITY_TOKEN_SECRET
 } from '@/constants'
+import type { EmployeeName } from '@/types'
+import type {
+  AccountLinesRequest,
+  AccountLinesResponse,
+  AccountObjectsRequest,
+  AccountObjectsResponse,
+  AccountSet,
+  Payment,
+  TrustSet,
+  URITokenBuy,
+  URITokenMint
+} from '@transia/xrpl'
+import { AccountSetAsfFlags, Client, Wallet } from '@transia/xrpl'
 
 type BaseRequest = AccountObjectsRequest | AccountLinesRequest
 type BaseTx = URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet
@@ -41,7 +41,7 @@ export class XrplClient {
 
     this.utilityToken = {
       currency: 'XXX',
-      issuer: this.wallet('UtilityToken').address,
+      issuer: this.wallet('UtilityToken').address
     }
   }
 
@@ -55,7 +55,7 @@ export class XrplClient {
       bob: Wallet.fromSeed(BOB_WALLET_SECRET),
       carol: Wallet.fromSeed(CAROL_WALLET_SECRET),
       company: Wallet.fromSeed(COMPANY_WALLET_SECRET),
-      utilityToken: Wallet.fromSeed(UTILITY_TOKEN_SECRET),
+      utilityToken: Wallet.fromSeed(UTILITY_TOKEN_SECRET)
     }
   }
 
@@ -74,14 +74,18 @@ export class XrplClient {
     }
   }
 
-  async requestAccountLines(request: AccountLinesRequest): Promise<AccountLinesResponse> {
+  async requestAccountLines(
+    request: AccountLinesRequest
+  ): Promise<AccountLinesResponse> {
     await this.connect()
     const response = await this.#request(request)
     await this.disconnect()
     return response as AccountLinesResponse
   }
 
-  async requestAccountObjects(request: AccountObjectsRequest): Promise<AccountObjectsResponse> {
+  async requestAccountObjects(
+    request: AccountObjectsRequest
+  ): Promise<AccountObjectsResponse> {
     await this.connect()
     const response = await this.#request(request)
     await this.disconnect()
@@ -119,9 +123,9 @@ export class XrplClient {
           TransactionType: 'AccountSet',
           Account: this.wallet('Company').address,
           SetFlag: AccountSetAsfFlags.asfDefaultRipple,
-          NetworkID: await this.client.getNetworkID(),
+          NetworkID: await this.client.getNetworkID()
         },
-        { wallet: this.wallet('Company') },
+        { wallet: this.wallet('Company') }
       )
 
       console.info('accoutnsetResponse: ', accoutnsetResponse)
@@ -133,11 +137,11 @@ export class XrplClient {
           LimitAmount: {
             issuer: this.wallet('Company').address,
             currency: 'LOY',
-            value: '100000',
+            value: '100000'
           },
-          NetworkID: await this.client.getNetworkID(),
+          NetworkID: await this.client.getNetworkID()
         },
-        { wallet: this.wallet('Company') },
+        { wallet: this.wallet('Company') }
       )
 
       console.info('trustSetResponse: ', trustSetResponse)
@@ -158,7 +162,7 @@ export class XrplClient {
   }
 
   async singleRequest(
-    request: AccountObjectsRequest | AccountLinesRequest,
+    request: AccountObjectsRequest | AccountLinesRequest
   ): Promise<AccountObjectsResponse | AccountLinesResponse> {
     return await this.client.request(request)
   }
@@ -166,7 +170,9 @@ export class XrplClient {
   async multiRequest(requests: BaseRequest[]) {
     try {
       await this.connect()
-      return await Promise.all(requests.map((request) => this.#request(request)))
+      return await Promise.all(
+        requests.map((request) => this.#request(request))
+      )
     } catch (error) {
       console.error('XrplClient: multiRequest: ', error)
       throw error
@@ -183,7 +189,7 @@ export class XrplClient {
         params.map(async ({ tx, wallet }) => {
           tx.NetworkID = await this.client.getNetworkID()
           return this.client.submitAndWait(tx, { wallet })
-        }),
+        })
       )
 
       console.info('multiSubmit responses: ', responses)
@@ -209,13 +215,16 @@ export class XrplClient {
     }
   }
 
-  async #submit(tx: URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet, executeWallet: Wallet) {
+  async #submit(
+    tx: URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet,
+    executeWallet: Wallet
+  ) {
     await this.client.connect()
 
     try {
       const opts = {
         wallet: executeWallet,
-        autofill: true,
+        autofill: true
       }
 
       tx.NetworkID = await this.client.getNetworkID()

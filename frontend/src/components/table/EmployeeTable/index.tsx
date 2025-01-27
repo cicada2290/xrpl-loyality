@@ -1,16 +1,16 @@
 'use client'
 
+import TokenFaucetButton from '@/components/button/TokenFaucetButton'
+import URITokenClaimButton from '@/components/button/URITokenClaimButton'
+import URITokenMintButton from '@/components/button/URITokenMintButton'
+import { useListEmployees } from '@/hooks/useListEmployees'
 import Grid from '@mui/material/Grid2'
 import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import TableCell from '@mui/material/TableCell'
-import TableBody from '@mui/material/TableBody'
 import Typography from '@mui/material/Typography'
-import URITokenMintButton from '@/components/button/URITokenMintButton'
-import URITokenClaimButton from '@/components/button/URITokenClaimButton'
-import TokenFaucetButton from '@/components/button/TokenFaucetButton'
-import { useListEmployees } from '@/hooks/useListEmployees'
 
 const EmployeeTable = () => {
   const { data, fetch } = useListEmployees()
@@ -46,11 +46,23 @@ const EmployeeTable = () => {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.balance}</TableCell>
                 <TableCell>
-                  {!row.isMinted && <URITokenMintButton fetch={fetch} tokenID={row.id} destination={row.name} />}
-                  {row.isMinted && !row.isReceived && (
-                    <URITokenClaimButton fetch={fetch} destination={row.name} URITokenID={row.index || ''} />
+                  {!row.isMinted && (
+                    <URITokenMintButton
+                      fetch={fetch}
+                      tokenID={row.id}
+                      destination={row.name}
+                    />
                   )}
-                  {row.isReceived && <TokenFaucetButton employeeName={row.name} />}
+                  {row.isMinted && !row.isReceived && (
+                    <URITokenClaimButton
+                      fetch={fetch}
+                      destination={row.name}
+                      URITokenID={row.index || ''}
+                    />
+                  )}
+                  {row.isReceived && (
+                    <TokenFaucetButton employeeName={row.name} />
+                  )}
                 </TableCell>
               </TableRow>
             ))}

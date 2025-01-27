@@ -1,10 +1,10 @@
+import WalletConnectButton from '@/components/button/WalletConnectButton'
+import TopbarLinkButton from '@/components/layout/TopbarLinkButton'
 import { APP_NAME } from '@/constants'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
-import WalletConnectButton from '@/components/button/WalletConnectButton'
-import TopbarLinkButton from '@/components/layout/TopbarLinkButton'
 
 const Topbar = () => {
   return (
@@ -13,7 +13,7 @@ const Topbar = () => {
         <Typography
           sx={{
             mr: 2,
-            letterSpacing: '.3rem',
+            letterSpacing: '.3rem'
           }}
         >
           {APP_NAME}

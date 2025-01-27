@@ -9,7 +9,14 @@ type SubmitButtonProps = {
 
 const SubmitButton = ({ onSubmit, loading }: SubmitButtonProps) => {
   return (
-    <Button variant="contained" color="primary" disableElevation size="large" onClick={onSubmit} loading={loading}>
+    <Button
+      variant="contained"
+      color="primary"
+      disableElevation
+      size="large"
+      onClick={onSubmit}
+      loading={loading}
+    >
       Submit
     </Button>
   )
