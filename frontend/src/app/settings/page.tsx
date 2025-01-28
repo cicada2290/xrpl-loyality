@@ -8,10 +8,11 @@ import PageHeader from '@/components/layout/PageHeader'
 import AccountSetForm from '@/components/form/AccountSetForm'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { SnackbarProvider } from 'notistack'
+import { AUTO_HIDE_DURATION } from '@/constants'
 
 const SettingsPage = () => {
   return (
-    <SnackbarProvider autoHideDuration={3000}>
+    <SnackbarProvider autoHideDuration={AUTO_HIDE_DURATION}>
       <PageContainer maxWidth="sm">
         <PageHeader title="SETTINGS" />
         <Accordion>

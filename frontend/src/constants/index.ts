@@ -21,3 +21,5 @@ export const WALLET_SEEDS = {
 
 export const COMPANY_XAHAU_CONFIG_URL =
   'https://xxxx.com/.well-known/xah-ledger.toml'
+
+export const AUTO_HIDE_DURATION = 3000;

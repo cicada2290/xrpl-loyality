@@ -14,6 +14,7 @@ import { COMPANY_XAHAU_CONFIG_URL } from '@/constants'
 import { stringToHex } from '@/utils'
 import { SnackbarProvider } from 'notistack'
 import { useGetEmployee } from '@/hooks/useGetEmployee'
+import { AUTO_HIDE_DURATION } from '@/constants'
 
 const ProfilePage = () => {
   const { account } = useAccountStore()
@@ -80,7 +81,7 @@ const ProfilePage = () => {
   }
 
   return (
-    <SnackbarProvider autoHideDuration={3000}>
+    <SnackbarProvider autoHideDuration={AUTO_HIDE_DURATION}>
       <PageContainer maxWidth="md">
         <PageHeader title="MY PROFILE" />
         <Grid container spacing={2}>

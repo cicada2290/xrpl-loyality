@@ -46,9 +46,12 @@ export const useAccountStore = create<AccountStore>((set) => ({
     root: null
   },
   setAccount: (account: Account) => set({ account }),
-  resetAccount: () => set({ account: {
-    name: null,
-    wallet: null,
-    root: null
-  } })
+  resetAccount: () =>
+    set({
+      account: {
+        name: null,
+        wallet: null,
+        root: null
+      }
+    })
 }))
