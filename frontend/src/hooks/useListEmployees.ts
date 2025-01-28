@@ -94,8 +94,6 @@ export const useListEmployees = () => {
             .filter((data) => employee.id === data.Digest)
             .shift() !== undefined
 
-        console.log('== isHoldNFTCompany ==: ', isHoldNFTCompany)
-
         // Check if the employee holds the NFT
         const isHoldNFTEmployee = !!uriToken
 

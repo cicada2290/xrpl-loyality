@@ -6,7 +6,7 @@
     "frontend"
   ],
   "scripts": {
-    "dev:frontend": "turbo run dev --filter=frontend",
+    "dev:fe": "turbo run dev --filter=frontend",
     "build": "turbo run build",
     "format:write": "biome format --write --verbose .",
     "test": "turbo run test",

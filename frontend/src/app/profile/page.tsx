@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useAccountStore } from '@/store/accountStore'
 import Chip from '@mui/material/Chip'
 import Divider from '@mui/material/Divider'
@@ -8,12 +9,22 @@ import Typography from '@mui/material/Typography'
 import AccountSetDialog from '@/components/dialog/AccountSetDialog'
 import PageContainer from '@/components/layout/PageContainer'
 import PageHeader from '@/components/layout/PageHeader'
+import EmployeeIDCard from '@/components/card/EmployeeIDCard'
 import { COMPANY_XAHAU_CONFIG_URL } from '@/constants'
 import { stringToHex } from '@/utils'
 import { SnackbarProvider } from 'notistack'
+import { useGetEmployee } from '@/hooks/useGetEmployee'
 
 const ProfilePage = () => {
   const { account } = useAccountStore()
+
+  useEffect(() => {
+    if (account.wallet?.address) {
+      submit(account.wallet?.address)
+    }
+  }, [account.wallet])
+
+  const { submit, data } = useGetEmployee()
 
   const DividerArea = () => {
     return (
@@ -73,6 +84,13 @@ const ProfilePage = () => {
       <PageContainer maxWidth="md">
         <PageHeader title="MY PROFILE" />
         <Grid container spacing={2}>
+          <Grid size={12} sx={{ px: 24 }}>
+            <EmployeeIDCard
+              isMinted={data?.isMinted || false}
+              isReceived={data?.isReceived || false}
+            />
+          </Grid>
+
           <Grid size={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <AccountSetDialog />
           </Grid>
