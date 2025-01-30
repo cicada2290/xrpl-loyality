@@ -1,14 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { useSnackbar, SnackbarProvider } from 'notistack'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Skeleton from '@mui/material/Skeleton'
-import Typography from '@mui/material/Typography'
 import EmployeeIDCard from '@/components/card/EmployeeIDCard'
 import WalletConnectButton from '@/components/button/WalletConnectButton'
 import WalletDisconnectButton from '@/components/button/WalletDisconnectButton'
@@ -16,27 +17,29 @@ import { useAccountStore } from '@/store/accountStore'
 import { useURITokenGet } from '@/hooks/useURITokenGet'
 import { useURITokenClaim } from '@/hooks/useURITokenClaim'
 
-const LoginPage = () => {
-  const [connected, setConnected] = useState<boolean>(false)
+const UserLoginPage = () => {
+  // State hooks
   const [loading, setLoading] = useState<boolean>(false)
-  const { enqueueSnackbar } = useSnackbar()
 
+  // Other hooks
   const { account } = useAccountStore()
+  const { push } = useRouter()
+  const { enqueueSnackbar } = useSnackbar()
   const {
     data: idCardData,
     loading: idCardLoading,
     request: idCardRequest,
     setData: setIdCardData
   } = useURITokenGet()
-
   const { claim } = useURITokenClaim()
 
+  // Event handlers
   const handleClaim = async () => {
     try {
       setLoading(true)
 
-      if (!account.name) {
-        throw new Error('Account name is required')
+      if (!account.wallet) {
+        throw new Error('Wallet is required')
       }
 
       if (!idCardData?.uriTokenID) {
@@ -44,9 +47,8 @@ const LoginPage = () => {
       }
 
       await claim({
-        accountName: account.name,
         URITokenID: idCardData.uriTokenID
-      })
+      }, account.wallet)
       enqueueSnackbar('Claim successful', { variant: 'success' })
     } catch (error) {
       console.error('handleClaim: ', error)
@@ -56,18 +58,21 @@ const LoginPage = () => {
     }
   }
 
+  // Effects
   useEffect(() => {
-    setConnected(account.isConnected)
+    if (account.isConnected && account.name) {
+      idCardRequest(account.name)
+    }
+    if (!account.isConnected) {
+      setIdCardData(null)
+    }
   }, [account.isConnected])
 
   useEffect(() => {
-    if (connected && account.name) {
-      idCardRequest(account.name)
+    if (idCardData !== null && idCardData.isMyOwn) {
+      push('/user/profile')
     }
-    if (!connected) {
-      setIdCardData(null)
-    }
-  }, [connected])
+  }, [idCardData])
 
   const IDCardSection = () => {
     return (
@@ -80,16 +85,18 @@ const LoginPage = () => {
             sx={{ mb: 2, py: 2, px: 3 }}
           />
         )}
-        {idCardData !== null && (
-          <Card sx={{ mb: 2, py: 2, px: 3, backgroundColor: 'grey.200' }}>
+        {idCardData !== null && !idCardData.isMyOwn && (
+          <Card
+            variant="outlined"
+            sx={{ mb: 2, py: 2, px: 3, backgroundColor: 'grey.200' }}
+          >
+            <CardHeader title="Please claim your ID card" />
             <CardContent>
-              <EmployeeIDCard image={idCardData.image} />
+              <EmployeeIDCard imageURL={idCardData.image} />
             </CardContent>
-            <CardActions>
+            <CardActions sx={{ justifyContent: 'center' }}>
               <Button
                 variant="contained"
-                color="primary"
-                fullWidth
                 disableElevation
                 loading={loading}
                 onClick={handleClaim}
@@ -103,23 +110,8 @@ const LoginPage = () => {
     )
   }
 
-  const WalletConnectSection = ({ isConnected }: { isConnected: boolean }) => (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        pb: 1
-      }}
-    >
-      {isConnected && <IDCardSection />}
-      {!isConnected && <WalletConnectButton />}
-      {isConnected && <WalletDisconnectButton />}
-    </Box>
-  )
-
   return (
-    <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+    <SnackbarProvider autoHideDuration={3000}>
       <Box
         sx={{
           display: 'flex',
@@ -129,10 +121,26 @@ const LoginPage = () => {
           height: '90vh'
         }}
       >
-        <WalletConnectSection isConnected={connected} />
+        {/* ID card section */}
+        <section>{account.isConnected && <IDCardSection />}</section>
+
+        {/* Wallet connect section */}
+        <section>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              pb: 1
+            }}
+          >
+            {!account.isConnected && <WalletConnectButton />}
+            {account.isConnected && <WalletDisconnectButton />}
+          </Box>
+        </section>
       </Box>
     </SnackbarProvider>
   )
 }
 
-export default LoginPage
+export default UserLoginPage

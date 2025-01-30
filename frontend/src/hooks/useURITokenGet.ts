@@ -68,6 +68,8 @@ export const useURITokenGet = () => {
 
       let image = null
       let uriTokenID = null
+      let isMyOwn = false
+
       if (employeeURIToken) {
         const uri = hexToString(employeeURIToken.URI)
         const { data } = await axios.get(uri, {
@@ -77,10 +79,12 @@ export const useURITokenGet = () => {
         })
         image = data.image
         uriTokenID = employeeURIToken.index
+        isMyOwn = true
 
         setData({
           image,
-          uriTokenID
+          uriTokenID,
+          isMyOwn
         })
       } else {
         setData(null)

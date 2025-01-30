@@ -1,6 +1,6 @@
 # XRPL LOYALTY
 
-A corporate loyalty system operating on the XRP Ledger 🎯
+An Employee Reward Management System Powered by XRP Ledger 🎯
 
 ## Overview
 
