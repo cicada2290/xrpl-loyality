@@ -1,35 +1,53 @@
 'use client'
 
-import { useURITokenMint } from '@/hooks/useMintURIToken'
-import type { EmployeeName } from '@/types'
+import { useState } from 'react'
+import { useSnackbar } from 'notistack'
 import Button from '@mui/material/Button'
+import { useURITokenMint } from '@/hooks/useURITokenMint'
 
 interface URITokenMintButtonProps {
-  tokenID: string
-  destination: EmployeeName
-  fetch: () => void
+  employeeId: string
+  employeeName: string
+  handleRequest: (employeeId: string, employeeName: string) => void
 }
 
 const URITokenMintButton = ({
-  tokenID,
-  destination,
-  fetch
+  employeeId,
+  employeeName,
+  handleRequest
 }: URITokenMintButtonProps) => {
-  const { submit, loading } = useURITokenMint()
+  const [loading, setLoading] = useState<boolean>(false)
+
+  const { mint } = useURITokenMint()
+  const { enqueueSnackbar } = useSnackbar()
 
   const handleClick = async () => {
-    await submit({ tokenID, destination })
-    await fetch()
+    setLoading(true)
+
+    try {
+      await mint({ employeeId, employeeName })
+      await handleRequest(employeeId, employeeName)
+      enqueueSnackbar('URIToken minted successfully', {
+        variant: 'success'
+      })
+    } catch (error) {
+      console.warn('URITokenMintButton: handleClick: ', error)
+      enqueueSnackbar((error as Error).message, {
+        variant: 'error'
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
     <Button
-      variant="outlined"
+      variant="contained"
       disableElevation
       loading={loading}
       onClick={handleClick}
     >
-      Mint
+      Mint ID Card
     </Button>
   )
 }

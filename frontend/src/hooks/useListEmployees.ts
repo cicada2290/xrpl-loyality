@@ -81,24 +81,32 @@ export const useListEmployees = () => {
 
         const balance = employeeAccountLinesResponse.result?.lines
           .filter(
-            (data) => data.currency === xrplClient.getUtilityToken().currency
+            (data) => data.currency === xrplClient.utilityToken().currency
           )
           .shift()
 
-        console.info('useListEmployees: balance: ', balance)
+        const address = xrplClient.wallet(employee.name).address
 
-        const employeeID = xrplClient.wallet(employee.name).address
-        const isMinted =
-          !!companyURIToken
+        // Check if the company holds the NFT
+        const isHoldNFTCompany =
+          companyURIToken
             .filter((data) => employee.id === data.Digest)
-            .shift() !== undefined || !!uriToken
-        const isReceived = isMinted ? employeeID === uriToken?.Owner : false
+            .shift() !== undefined
+
+        // Check if the employee holds the NFT
+        const isHoldNFTEmployee = !!uriToken
+
+        // Check if the NFT is minted
+        const isMintedNFT = isHoldNFTCompany || isHoldNFTEmployee
+
+        // Check if the NFT is received
+        const isReceivedNFT = isMintedNFT ? address === uriToken?.Owner : false
 
         result.push({
           ...employee,
-          employeeID,
-          isMinted,
-          isReceived,
+          address,
+          isMinted: isMintedNFT,
+          isReceived: isReceivedNFT,
           balance: balance?.balance ? BigInt(balance.balance) : 0n,
           index: uriToken?.index
         })

@@ -1,19 +1,16 @@
 'use client'
 
-import TokenFaucetButton from '@/components/button/TokenFaucetButton'
-import URITokenClaimButton from '@/components/button/URITokenClaimButton'
-import URITokenMintButton from '@/components/button/URITokenMintButton'
-import { useListEmployees } from '@/hooks/useListEmployees'
+import { useState } from 'react'
 import Grid from '@mui/material/Grid2'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
+import EmployeeTableHeader from './EmployeeTableHeader'
+import EmployeeTableRow from './EmployeeTableRow'
+import { useEmployeesList } from '@/hooks/useEmployeesList'
 
 const EmployeeTable = () => {
-  const { data, fetch } = useListEmployees()
+  const { data: employees } = useEmployeesList()
 
   return (
     <Grid container spacing={2}>
@@ -27,44 +24,10 @@ const EmployeeTable = () => {
       </Grid>
       <Grid size={12}>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Token ID</TableCell>
-              <TableCell>Employee ID</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell>Balance</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
+          <EmployeeTableHeader />
           <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>
-                  {row.id.slice(0, 8)}...{row.id.slice(-8)}
-                </TableCell>
-                <TableCell>{row.employeeID}</TableCell>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.balance}</TableCell>
-                <TableCell>
-                  {!row.isMinted && (
-                    <URITokenMintButton
-                      fetch={fetch}
-                      tokenID={row.id}
-                      destination={row.name}
-                    />
-                  )}
-                  {row.isMinted && !row.isReceived && (
-                    <URITokenClaimButton
-                      fetch={fetch}
-                      destination={row.name}
-                      URITokenID={row.index || ''}
-                    />
-                  )}
-                  {row.isReceived && (
-                    <TokenFaucetButton employeeName={row.name} />
-                  )}
-                </TableCell>
-              </TableRow>
+            {employees.map((employee) => (
+              <EmployeeTableRow key={employee.id} employee={employee} />
             ))}
           </TableBody>
         </Table>

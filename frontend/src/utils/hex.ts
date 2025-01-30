@@ -1,5 +1,5 @@
 export const stringToHex = (str: string): string => {
-  return Buffer.from(str).toString('hex')
+  return Buffer.from(str).toString('hex').toUpperCase()
 }
 
 export const hexToString = (hex: string): string => {

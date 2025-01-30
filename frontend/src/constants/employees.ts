@@ -4,7 +4,9 @@ import { generate256BitHash } from '@/utils'
 export const EMPLOYEE_NAMES: Record<EmployeeName, EmployeeName> = {
   Alice: 'Alice',
   Bob: 'Bob',
-  Carol: 'Carol'
+  Carol: 'Carol',
+  Dave: 'Dave',
+  Eve: 'Eve'
 } as const
 
 export const employees: Employee[] = [
@@ -19,5 +21,13 @@ export const employees: Employee[] = [
   {
     id: generate256BitHash('3'),
     name: EMPLOYEE_NAMES.Carol
+  },
+  {
+    id: generate256BitHash('4'),
+    name: EMPLOYEE_NAMES.Dave
+  },
+  {
+    id: generate256BitHash('5'),
+    name: EMPLOYEE_NAMES.Eve
   }
 ]
