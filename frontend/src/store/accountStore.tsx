@@ -8,29 +8,15 @@ export interface AccountRoot {
   emailHash: string
   ownerCount: number
   urlgravatar: string
-  flags: {
-    defaultRipple: boolean
-    depositAuth: boolean
-    disableMasterKey: boolean
-    disallowIncomingCheck: boolean
-    disallowIncomingNFTokenOffer: boolean
-    disallowIncomingPayChan: boolean
-    disallowIncomingRemit: boolean
-    disallowIncomingTrustline: boolean
-    disallowIncomingXRP: boolean
-    globalFreeze: boolean
-    noFreeze: boolean
-    passwordSpent: boolean
-    requireAuthorization: boolean
-    requireDestinationTag: boolean
-    tshCollect: boolean
-  }
 }
 
 export interface Account {
-  name: EmployeeName | 'Company' | null
+  name: EmployeeName | 'Company' | 'UtilityToken' | null
   wallet: Wallet | null
   root: AccountRoot | null
+  lines: any[]
+  isConnected: boolean
+  isSetTrustline: boolean
 }
 
 export interface AccountStore {
@@ -43,7 +29,10 @@ export const useAccountStore = create<AccountStore>((set) => ({
   account: {
     name: null,
     wallet: null,
-    root: null
+    root: null,
+    lines: [],
+    isConnected: false,
+    isSetTrustline: false
   },
   setAccount: (account: Account) => set({ account }),
   resetAccount: () =>
@@ -51,7 +40,10 @@ export const useAccountStore = create<AccountStore>((set) => ({
       account: {
         name: null,
         wallet: null,
-        root: null
+        root: null,
+        lines: [],
+        isConnected: false,
+        isSetTrustline: false
       }
     })
 }))

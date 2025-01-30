@@ -27,32 +27,32 @@ export const useCreateUtilityToken = () => {
               Account: data.issuer,
               SetFlag: AccountSetAsfFlags.asfDefaultRipple
             },
-            wallet: xrplClient.getWallet().utilityToken
+            wallet: xrplClient.wallet('UtilityToken')
           },
           {
             tx: {
               TransactionType: 'TrustSet',
-              Account: xrplClient.getWallet().company.address,
+              Account: xrplClient.wallet('Company').address,
               LimitAmount: {
                 issuer: data.issuer,
                 currency: data.currency,
                 value: data.issueAmount.toString()
               }
             },
-            wallet: xrplClient.getWallet().company
+            wallet: xrplClient.wallet('Company')
           },
           {
             tx: {
               TransactionType: 'Payment',
-              Account: xrplClient.getWallet().utilityToken.address,
-              Destination: xrplClient.getWallet().company.address,
+              Account: xrplClient.wallet('UtilityToken').address,
+              Destination: xrplClient.wallet('Company').address,
               Amount: {
                 currency: data.currency,
                 issuer: data.issuer,
                 value: data.issueAmount.toString()
               }
             },
-            wallet: xrplClient.getWallet().utilityToken
+            wallet: xrplClient.wallet('UtilityToken')
           }
         ])
 

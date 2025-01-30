@@ -1,26 +1,32 @@
 'use client'
 
-import { XAHAU_WSS_ENDPOINT } from '@/constants'
-import { useReceiveToken } from '@/hooks/useReceiveToken'
-import { XrplClient } from '@/libs/XrplClient'
-import type { EmployeeName } from '@/types'
+import { useState } from 'react'
 import Button from '@mui/material/Button'
+import { useTokenFaucet } from '@/hooks/useTokenFaucet'
+import { useAccountStore } from '@/store/accountStore'
 
-const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
+const TokenFaucetButton = () => {
+  const [loading, setLoading] = useState<boolean>(false)
+  const { submit } = useTokenFaucet()
+  const { account } = useAccountStore()
 
-const TokenFaucetButton = ({
-  employeeName
-}: { employeeName: EmployeeName }) => {
-  const { submit, loading } = useReceiveToken()
+  const handleClick = async () => {
+    if (!account.wallet) return
+    if (!account.name) return
+
+    setLoading(true)
+    await submit(account.name, account.wallet.address)
+    setLoading(false)
+  }
 
   return (
     <Button
-      variant="outlined"
+      variant="contained"
       disableElevation
       loading={loading}
-      onClick={() => submit(employeeName)}
+      onClick={handleClick}
     >
-      Send 10 {xrplClient.utilityToken().currency}
+      Faucet
     </Button>
   )
 }

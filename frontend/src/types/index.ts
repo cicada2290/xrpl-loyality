@@ -9,3 +9,10 @@ export type Employee = {
   index?: string
   balance?: bigint
 }
+
+export type EmployeeData = {
+  id: string
+  name: string
+  address: string
+  degit: string
+}

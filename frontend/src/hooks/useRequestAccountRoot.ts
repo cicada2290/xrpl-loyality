@@ -1,3 +1,4 @@
+import type { AccountInfoResponse } from '@transia/xrpl'
 import { useState } from 'react'
 import { Wallet } from '@transia/xrpl'
 import { XAHAU_WSS_ENDPOINT } from '@/constants'
@@ -16,13 +17,13 @@ export const useRequestAccountRoot = () => {
 
       setLoading(true)
 
-      const accountRootResponse = await xrplClient.requestAccountRoot(
-        wallet.address
-      )
+      const accountRootResponse: AccountInfoResponse =
+        await xrplClient.requestAccountRoot(wallet.address)
 
       console.log('useRequestAccountRoot: ', accountRootResponse)
 
       const accountRoot = accountRootResponse.result.account_data
+      // @ts-ignore
       const accountFlags = accountRootResponse.result.account_flags
 
       return {
@@ -30,6 +31,7 @@ export const useRequestAccountRoot = () => {
         domain: accountRoot.Domain ? accountRoot.Domain : '',
         emailHash: accountRoot.EmailHash,
         ownerCount: accountRoot.OwnerCount,
+        // @ts-ignore
         urlgravatar: accountRoot.urlgravatar,
         flags: {
           defaultRipple: accountFlags.defaultRipple,

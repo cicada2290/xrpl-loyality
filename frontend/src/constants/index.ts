@@ -10,8 +10,8 @@ export const NFTOKEN_TAXON_ID = process.env.NEXT_PUBLIC_NFTOKEN_TAXON_ID
 export const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL
 
 export const WALLET_SEEDS = {
-  ALICE: 'snixUxC9hGc6hsKLhSdmPmrzQMoJf',
-  BOB: 'snHAKeDNCSz8B7UtHY28Jp6cSKEYD',
+  ALICE: 'ssmtYBd3dgrMgbw2QyReZ2t9HYdr7',
+  BOB: 'ssjmxpPZEJrSqhYYhXSsYiyUXNamA',
   CAROL: 'shaLKoutS4EFG8XrCB4TMT5FRHfDv',
   DAVE: 'ssCLqn6cPwRySuBUutbtubFhrCaaz',
   EVE: 'shKyb8VikJHjF8jEcE6erBHQPZL2E',

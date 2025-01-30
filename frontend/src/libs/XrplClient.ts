@@ -9,9 +9,11 @@ import type {
   Payment,
   TrustSet,
   URITokenBuy,
-  URITokenMint
+  URITokenMint,
+  URITokenBurn
 } from '@transia/xrpl'
 import type { EmployeeName } from '@/types'
+import { XAHAU_WSS_ENDPOINT } from '@/constants'
 import { AccountSetAsfFlags, Client, Wallet } from '@transia/xrpl'
 import { getWallet } from '@/utils/wallet'
 
@@ -30,8 +32,16 @@ const UTILITY_TOKEN_CURRENCY = 'LOY'
 export class XrplClient {
   private client: Client
 
-  constructor(url: string) {
-    this.client = new Client(url)
+  constructor(url?: string) {
+    this.client = new Client(url || XAHAU_WSS_ENDPOINT)
+  }
+
+  employeeWallets(accountName: string) {
+    return getWallet(accountName)
+  }
+
+  companyWallets(accountName: 'Company' | 'UtilityToken') {
+    return getWallet(accountName)
   }
 
   wallet(accountName: EmployeeName | 'Company' | 'UtilityToken'): Wallet {
@@ -104,6 +114,12 @@ export class XrplClient {
   }
 
   async submitURITokenBuy(tx: URITokenBuy, executeWallet: Wallet) {
+    return await this.#withConnection(async () => {
+      return await this.#submit(tx, executeWallet)
+    })
+  }
+
+  async submitURITokenBurn(tx: URITokenBurn, executeWallet: Wallet) {
     return await this.#withConnection(async () => {
       return await this.#submit(tx, executeWallet)
     })
@@ -224,7 +240,13 @@ export class XrplClient {
   }
 
   async #submit(
-    tx: URITokenMint | URITokenBuy | AccountSet | Payment | TrustSet,
+    tx:
+      | URITokenMint
+      | URITokenBuy
+      | URITokenBurn
+      | AccountSet
+      | Payment
+      | TrustSet,
     executeWallet: Wallet
   ) {
     try {

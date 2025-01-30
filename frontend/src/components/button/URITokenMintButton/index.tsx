@@ -1,44 +1,32 @@
 'use client'
 
-import type { EmployeeName } from '@/types'
 import { useState } from 'react'
-import { useURITokenMint } from '@/hooks/useURITokenMint'
-import Button from '@mui/material/Button'
-import { useAccountStore } from '@/store/accountStore'
 import { useSnackbar } from 'notistack'
+import Button from '@mui/material/Button'
+import { useURITokenMint } from '@/hooks/useURITokenMint'
 
 interface URITokenMintButtonProps {
-  tokenID: string
-  destination: EmployeeName
-  fetch: () => void
+  employeeId: string
+  employeeName: string
+  handleRequest: (employeeId: string, employeeName: string) => void
 }
 
 const URITokenMintButton = ({
-  tokenID,
-  destination,
-  fetch
+  employeeId,
+  employeeName,
+  handleRequest
 }: URITokenMintButtonProps) => {
   const [loading, setLoading] = useState<boolean>(false)
 
-  const { submit } = useURITokenMint()
+  const { mint } = useURITokenMint()
   const { enqueueSnackbar } = useSnackbar()
-
-  const { account } = useAccountStore()
 
   const handleClick = async () => {
     setLoading(true)
 
     try {
-      if (!account.wallet) {
-        throw new Error('Not connected to the wallet')
-      }
-
-      if (account.name !== 'Company') {
-        throw new Error('Only the company can mint URIToken')
-      }
-
-      await submit({ tokenID, destination, executeWallet: account.wallet })
-      await fetch()
+      await mint({ employeeId, employeeName })
+      await handleRequest(employeeId, employeeName)
       enqueueSnackbar('URIToken minted successfully', {
         variant: 'success'
       })
@@ -54,12 +42,12 @@ const URITokenMintButton = ({
 
   return (
     <Button
-      variant="outlined"
+      variant="contained"
       disableElevation
       loading={loading}
       onClick={handleClick}
     >
-      URIToken Mint
+      Mint ID Card
     </Button>
   )
 }

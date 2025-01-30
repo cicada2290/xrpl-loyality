@@ -2,8 +2,6 @@
 
 import type { EmployeeName } from '@/types'
 import { useState } from 'react'
-import { useAccountStore } from '@/store/accountStore'
-import { useRequestAccountRoot } from '@/hooks/useRequestAccountRoot'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -11,7 +9,7 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import LinearProgress from '@mui/material/LinearProgress'
 import { employees } from '@/constants/employees'
-import { getWallet } from '@/utils'
+import { useWalletConnect } from '@/hooks/useWalletConnect'
 
 interface WalletConnectDialogProps {
   open: boolean
@@ -19,25 +17,16 @@ interface WalletConnectDialogProps {
 }
 
 const WalletConnectDialog = ({ open, onClose }: WalletConnectDialogProps) => {
-  const { setAccount } = useAccountStore()
-  const { request } = useRequestAccountRoot()
+  const { connect } = useWalletConnect()
 
   const [loading, setLoading] = useState<boolean>(false)
 
-  const handleConnect = async (accountType: EmployeeName | 'Company') => {
+  const handleConnect = async (
+    accountType: EmployeeName | 'Company' | 'UtilityToken'
+  ) => {
     setLoading(true)
-
-    const wallet = getWallet(accountType)
-    const root = await request(wallet)
-
-    setAccount({
-      name: accountType,
-      wallet,
-      root
-    })
-
+    await connect(accountType)
     setLoading(false)
-
     onClose()
   }
 
@@ -66,6 +55,15 @@ const WalletConnectDialog = ({ open, onClose }: WalletConnectDialogProps) => {
             onClick={() => handleConnect('Company')}
           >
             Company
+          </Button>
+          <Button
+            variant="contained"
+            disableElevation
+            fullWidth
+            disabled={loading}
+            onClick={() => handleConnect('UtilityToken')}
+          >
+            Utility Token Issuer
           </Button>
         </Box>
       </DialogContent>

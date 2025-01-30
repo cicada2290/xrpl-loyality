@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography'
 import LogoutIcon from '@mui/icons-material/Logout'
 import PersonIcon from '@mui/icons-material/Person'
 import WalletConnectDialog from '@/components/dialog/WalletConnectDialog'
+import { useWalletDisconnect } from '@/hooks/useWalletDisconnect'
 
 const WalletConnectButton = () => {
   const [open, setOpen] = useState<boolean>(false)
@@ -25,7 +26,8 @@ const WalletConnectButton = () => {
 
   const router = useRouter()
 
-  const { account, resetAccount } = useAccountStore()
+  const { account } = useAccountStore()
+  const { disconnect } = useWalletDisconnect()
 
   const handleOpen = () => {
     setOpen(true)
@@ -49,7 +51,7 @@ const WalletConnectButton = () => {
   }
 
   const handleLogout = () => {
-    resetAccount()
+    disconnect()
     handleMenuClose()
   }
 

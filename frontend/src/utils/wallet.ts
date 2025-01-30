@@ -1,10 +1,7 @@
-import type { EmployeeName } from '@/types'
 import { Wallet } from '@transia/xrpl'
 import { WALLET_SEEDS } from '@/constants'
 
-export const getWallet = (
-  accountName: EmployeeName | 'Company' | 'UtilityToken'
-): Wallet => {
+export const getWallet = (accountName: string | null): Wallet => {
   if (accountName !== null) {
     switch (accountName) {
       case 'Alice':

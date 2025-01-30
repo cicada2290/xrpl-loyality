@@ -1,49 +1,46 @@
-import { BACKEND_API_URL, XAHAU_WSS_ENDPOINT } from '@/constants'
-import { XrplClient } from '@/libs'
-import type { EmployeeName } from '@/types'
-import type { URITokenMint } from '@transia/xrpl'
-import { URITokenMintFlags, convertStringToHex, Wallet } from '@transia/xrpl'
 import { useState } from 'react'
+import { BACKEND_API_URL } from '@/constants'
+import { XrplClient } from '@/libs'
+import { URITokenMintFlags, convertStringToHex } from '@transia/xrpl'
+import { generate256BitHash } from '@/utils'
 
-const EMPLOYEE_ID_CARD_URI = `${BACKEND_API_URL}/api/employee`
+const EMPLOYEE_ID_CARD_URI = `${BACKEND_API_URL}/api/uritokens`
 
-export type SubmitRequest = {
-  tokenID: string
-  destination: EmployeeName
-  executeWallet: Wallet
-}
-
-const xrplClient = new XrplClient(XAHAU_WSS_ENDPOINT)
+const xrplClient = new XrplClient()
 
 export const useURITokenMint = () => {
   const [loading, setLoading] = useState<boolean>(false)
 
-  const submit = async ({
-    tokenID,
-    destination,
-    executeWallet
-  }: SubmitRequest): Promise<void> => {
+  const mint = async ({
+    employeeId,
+    employeeName
+  }: {
+    employeeId: string
+    employeeName: string
+  }): Promise<void> => {
     setLoading(true)
 
-    console.info('useURITokenMint: request: ', tokenID, destination)
-
     try {
-      const tx: URITokenMint = {
-        TransactionType: 'URITokenMint',
-        Amount: '0',
-        Account: executeWallet.address,
-        Destination: xrplClient.wallet(destination).address,
-        Digest: tokenID,
-        URI: convertStringToHex(`${EMPLOYEE_ID_CARD_URI}/${tokenID}`),
-        Flags: URITokenMintFlags.tfBurnable
-      }
+      const degit = generate256BitHash(employeeId)
+      const companyWallet = xrplClient.companyWallets('Company')
+      const employeeWallet = xrplClient.employeeWallets(employeeName)
 
-      console.info('useURITokenMint: submit: ', tx)
+      const response = await xrplClient.submitURITokenMint(
+        {
+          TransactionType: 'URITokenMint',
+          Amount: '0',
+          Account: companyWallet.address,
+          Destination: employeeWallet.address,
+          Digest: degit,
+          URI: convertStringToHex(`${EMPLOYEE_ID_CARD_URI}/${degit}`),
+          Flags: URITokenMintFlags.tfBurnable
+        },
+        companyWallet
+      )
 
-      const response = await xrplClient.submitURITokenMint(tx, executeWallet)
-      console.info('useURITokenMint: submit: ', response)
+      console.info('useURITokenMint: mint: ', response)
     } catch (error) {
-      console.error('useURITokenMint: submit: ', error)
+      console.error('useURITokenMint: mint: ', error)
       throw error
     } finally {
       setLoading(false)
@@ -51,7 +48,7 @@ export const useURITokenMint = () => {
   }
 
   return {
-    submit,
+    mint,
     loading
   }
 }

@@ -51,7 +51,6 @@ export const useListEmployees = () => {
           )
 
       for (const employee of employees) {
-        console.log('== employee ==: ', employee.name)
         const [employeeAccountObjectsResponse, employeeAccountLinesResponse] =
           (await xrplClient.multiRequest([
             {

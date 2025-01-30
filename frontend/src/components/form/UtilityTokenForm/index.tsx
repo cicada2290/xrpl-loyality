@@ -45,7 +45,7 @@ const UtilityTokenForm = () => {
         <Controller
           name="currency"
           control={control}
-          defaultValue={xrplClient.getUtilityToken().currency}
+          defaultValue={xrplClient.utilityToken().currency}
           render={({ field }) => (
             <TextField
               label="Currency"
@@ -59,7 +59,7 @@ const UtilityTokenForm = () => {
         <Controller
           name="issuer"
           control={control}
-          defaultValue={xrplClient.getUtilityToken().issuer}
+          defaultValue={xrplClient.utilityToken().issuer}
           render={({ field }) => (
             <TextField
               label="Issuer"
@@ -87,7 +87,7 @@ const UtilityTokenForm = () => {
         <Controller
           name="recipient"
           control={control}
-          defaultValue={xrplClient.getWallet().company.address}
+          defaultValue={xrplClient.wallet('Company').address}
           render={({ field }) => (
             <TextField
               label="Recipient"

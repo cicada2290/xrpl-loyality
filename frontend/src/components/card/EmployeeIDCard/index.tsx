@@ -1,25 +1,13 @@
 'use client'
 
-import ObtainedCard from './ObtainedCard'
-import PublishedCard from './PublishedCard'
-import UnpublishedCard from './UnpublishedCard'
+import Image from 'next/image'
 
 interface EmployeeIDCardProps {
-  isMinted: boolean
-  isReceived: boolean
+  image: string
 }
 
-export default function EmployeeIDCard({
-  isMinted,
-  isReceived
-}: EmployeeIDCardProps) {
-  if (isReceived) {
-    return <ObtainedCard />
-  }
-
-  if (isMinted) {
-    return <PublishedCard />
-  }
-
-  return <UnpublishedCard />
+const EmployeeIDCard = ({ image }: EmployeeIDCardProps) => {
+  return <Image src={image} alt="ID Card" width={380} height={220} />
 }
+
+export default EmployeeIDCard
